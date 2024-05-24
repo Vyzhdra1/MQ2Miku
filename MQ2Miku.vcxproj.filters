@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Ability">
+      <UniqueIdentifier>{4fc49640-18bc-4da7-8edf-cf390b4141dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Condition">
+      <UniqueIdentifier>{b8e9dc17-f935-4fc1-805f-2d68fb753a20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Player">
+      <UniqueIdentifier>{e6e057c2-50d6-4143-903c-7b82c6a022bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Command">
+      <UniqueIdentifier>{df4b9d97-6318-45ae-82ea-3ddffaca7f56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Util">
+      <UniqueIdentifier>{9461dd25-6b62-473f-9130-c0f79de31634}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Ability\Sets">
+      <UniqueIdentifier>{fbef91e1-f950-4b59-a24d-2e74f18a794f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Behaviour">
+      <UniqueIdentifier>{274b7ad2-b0e4-42c6-bebd-0391cf663dac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Behaviour\Movement">
+      <UniqueIdentifier>{2864db66-6783-40f5-8cdb-1acdc25c19ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Config">
+      <UniqueIdentifier>{10aaf06a-3fe6-4a64-89c0-fdf34890ee8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BuffMonitor">
+      <UniqueIdentifier>{d0100ca6-a189-43b3-96c7-79e63c66b59d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Encounter">
+      <UniqueIdentifier>{0a9b15da-609a-42ab-8cf0-465d9dba9de6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Manager">
+      <UniqueIdentifier>{b8e141f6-98dd-421b-b419-47c25428242c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Workspace">
+      <UniqueIdentifier>{10721127-5cb1-404e-85d0-44cd147e784e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Workspace\Context">
+      <UniqueIdentifier>{a26a872c-4845-40ed-8ae2-990df701023a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Workspace\StoredObject">
+      <UniqueIdentifier>{f3669575-eb84-4cbd-8c99-377c49ce4451}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MQ2Miku.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FollowBehaviour.cpp">
+      <Filter>Source Files\Behaviour\Movement</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ActivateCommand.h">
+      <Filter>Source Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="AssistCommand.h">
+      <Filter>Source Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackCommand.h">
+      <Filter>Source Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="AAAbility.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="Ability.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="ActiveDiscCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="BackoffCommand.h">
+      <Filter>Source Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="BroadcastCommand.h">
+      <Filter>Source Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffActiveCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="CombatCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="EnduranceCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemMissingCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemAbility.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="DiscAbility.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandConsts.h">
+      <Filter>Source Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="MikuClass.h">
+      <Filter>Source Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="MikuPlayer.h">
+      <Filter>Source Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Condition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="SummonedItemAbility.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoveAuraAbility.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="RecastDebuffCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="RecastBuffCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="ManaCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="FollowCommand.h">
+      <Filter>Source Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillAbility.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="SpellAbility.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="KillRogueDiscBurnAction.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser.h">
+      <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUtils.h">
+      <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="SpellUtils.h">
+      <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="HasPetCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbilityCollectionAbility.h">
+      <Filter>Source Files\Ability\Sets</Filter>
+    </ClInclude>
+    <ClInclude Include="CastFirstAvailable.h">
+      <Filter>Source Files\Ability\Sets</Filter>
+    </ClInclude>
+    <ClInclude Include="CastOnceSequence.h">
+      <Filter>Source Files\Ability\Sets</Filter>
+    </ClInclude>
+    <ClInclude Include="SequenceAbilities.h">
+      <Filter>Source Files\Ability\Sets</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandAbility.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffAbilities.h">
+      <Filter>Source Files\Ability\Sets</Filter>
+    </ClInclude>
+    <ClInclude Include="Behaviour.h">
+      <Filter>Source Files\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="TargetAbility.h">
+      <Filter>Source Files\Ability\Sets</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="InRangeCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="InvisibleCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="StandingCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="BooleanCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbilityManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="StateManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="StateCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigManager.h">
+      <Filter>Source Files\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Entry.h">
+      <Filter>Source Files\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Token.h">
+      <Filter>Source Files\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Action.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemOnCursorCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="BurnCommand.h">
+      <Filter>Source Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="MikuMovementUtils.h">
+      <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="MovingCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="CastingCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="DeadPlayerCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="MissingBuff.h">
+      <Filter>Source Files\BuffMonitor</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="RestlessAssaultGrindEncounter.h">
+      <Filter>Source Files\Encounter</Filter>
+    </ClInclude>
+    <ClInclude Include="Encounter.h">
+      <Filter>Source Files\Encounter</Filter>
+    </ClInclude>
+    <ClInclude Include="XTarRangeCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="EncounterManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="CombatLocations.h">
+      <Filter>Source Files\Encounter</Filter>
+    </ClInclude>
+    <ClInclude Include="EncounterStep.h">
+      <Filter>Source Files\Encounter</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Factory.h">
+      <Filter>Source Files\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="ConditionFactory.h">
+      <Filter>Source Files\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalKeys.h">
+      <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="MeleeUtils.h">
+      <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="AbilityReadyCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffExistsCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbilityCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="AuraCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffAction.h">
+      <Filter>Source Files\Ability</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffMonitor.h">
+      <Filter>Source Files\Ability\Sets</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffStatusRequestCommand.h">
+      <Filter>Source Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffStatusQueryCommand.h">
+      <Filter>Source Files\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffMonitorManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="BannedTargetCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="HealingManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerTarget.h">
+      <Filter>Source Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerBuffProperties.h">
+      <Filter>Source Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalWorkspace.h">
+      <Filter>Source Files\Workspace</Filter>
+    </ClInclude>
+    <ClInclude Include="DbCharacter.h">
+      <Filter>Source Files\Workspace\StoredObject</Filter>
+    </ClInclude>
+    <ClInclude Include="DbSettings.h">
+      <Filter>Source Files\Workspace\StoredObject</Filter>
+    </ClInclude>
+    <ClInclude Include="StoredObject.h">
+      <Filter>Source Files\Workspace\StoredObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsContext.h">
+      <Filter>Source Files\Workspace\Context</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MQ2Miku.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
+</Project>

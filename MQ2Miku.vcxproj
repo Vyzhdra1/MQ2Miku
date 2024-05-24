@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{A254B06C-16C9-46D0-8145-540E2AD6C809}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), src\Plugin.props))\src\Plugin.props" Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), src\Plugin.props))' != '' " />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup>
+    <PreBuildEvent>
+      <Command>if exist "$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), tools\build_scripts\Plugin_Versioning.ps1))\tools\build_scripts\Plugin_Versioning.ps1" powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File "$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), tools\build_scripts\Plugin_Versioning.ps1))\tools\build_scripts\Plugin_Versioning.ps1" -ProjectName "$(MSBuildProjectName)" -ProjectDirectory "$([MSBuild]::EnsureTrailingSlash('$(MSBuildThisFileDirectory)'))\"</Command>
+      <Message>Updating version resource for $(MSBuildProjectName)...</Message>
+    </PreBuildEvent>
+    <ClCompile>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp17</LanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\..\Very Vanilla\plugins\</OutDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="FollowBehaviour.cpp" />
+    <ClCompile Include="MQ2Miku.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AAAbility.h" />
+    <ClInclude Include="Ability.h" />
+    <ClInclude Include="AbilityCollectionAbility.h" />
+    <ClInclude Include="AbilityCondition.h" />
+    <ClInclude Include="AbilityManager.h" />
+    <ClInclude Include="AbilityReadyCondition.h" />
+    <ClInclude Include="Action.h" />
+    <ClInclude Include="ActionManager.h" />
+    <ClInclude Include="ActivateCommand.h" />
+    <ClInclude Include="ActiveDiscCondition.h" />
+    <ClInclude Include="AssistCommand.h" />
+    <ClInclude Include="AttackCommand.h" />
+    <ClInclude Include="AuraCondition.h" />
+    <ClInclude Include="BackoffCommand.h" />
+    <ClInclude Include="BannedTargetCondition.h" />
+    <ClInclude Include="Behaviour.h" />
+    <ClInclude Include="BooleanCondition.h" />
+    <ClInclude Include="BroadcastCommand.h" />
+    <ClInclude Include="BuffAction.h" />
+    <ClInclude Include="BuffAbilities.h" />
+    <ClInclude Include="BuffActiveCondition.h" />
+    <ClInclude Include="BuffCondition.h" />
+    <ClInclude Include="BuffExistsCondition.h" />
+    <ClInclude Include="BuffMonitor.h" />
+    <ClInclude Include="BuffMonitorManager.h" />
+    <ClInclude Include="DbCharacter.h" />
+    <ClInclude Include="DbSettings.h" />
+    <ClInclude Include="GlobalWorkspace.h" />
+    <ClInclude Include="PlayerBuffProperties.h" />
+    <ClInclude Include="BuffStatusQueryCommand.h" />
+    <ClInclude Include="BuffStatusRequestCommand.h" />
+    <ClInclude Include="BurnCommand.h" />
+    <ClInclude Include="CastFirstAvailable.h" />
+    <ClInclude Include="CastingCondition.h" />
+    <ClInclude Include="CastOnceSequence.h" />
+    <ClInclude Include="CombatCondition.h" />
+    <ClInclude Include="CombatLocations.h" />
+    <ClInclude Include="CommandAbility.h" />
+    <ClInclude Include="CommandConsts.h" />
+    <ClInclude Include="Condition.h" />
+    <ClInclude Include="ConditionFactory.h" />
+    <ClInclude Include="ConfigManager.h" />
+    <ClInclude Include="DeadPlayerCondition.h" />
+    <ClInclude Include="DiscAbility.h" />
+    <ClInclude Include="Encounter.h" />
+    <ClInclude Include="GlobalKeys.h" />
+    <ClInclude Include="HealingManager.h" />
+    <ClInclude Include="MeleeUtils.h" />
+    <ClInclude Include="SettingCondition.h" />
+    <ClInclude Include="EncounterManager.h" />
+    <ClInclude Include="EncounterStep.h" />
+    <ClInclude Include="RestlessAssaultGrindEncounter.h" />
+    <ClInclude Include="EnduranceCondition.h" />
+    <ClInclude Include="Entry.h" />
+    <ClInclude Include="Factory.h" />
+    <ClInclude Include="FollowCommand.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="HasPetCondition.h" />
+    <ClInclude Include="SettingsContext.h" />
+    <ClInclude Include="SpawnManager.h" />
+    <ClInclude Include="InRangeCondition.h" />
+    <ClInclude Include="InvisibleCondition.h" />
+    <ClInclude Include="ItemOnCursorCondition.h" />
+    <ClInclude Include="MikuMovementUtils.h" />
+    <ClInclude Include="MissingBuff.h" />
+    <ClInclude Include="MovingCondition.h" />
+    <ClInclude Include="SettingManager.h" />
+    <ClInclude Include="PlayerTarget.h" />
+    <ClInclude Include="StoredObject.h" />
+    <ClInclude Include="TargetAbility.h" />
+    <ClInclude Include="HealthCondition.h" />
+    <ClInclude Include="ItemAbility.h" />
+    <ClInclude Include="ItemMissingCondition.h" />
+    <ClInclude Include="KillRogueDiscBurnAction.h" />
+    <ClInclude Include="MikuClass.h" />
+    <ClInclude Include="MikuPlayer.h" />
+    <ClInclude Include="ManaCondition.h" />
+    <ClInclude Include="Parser.h" />
+    <ClInclude Include="PlayerUtils.h" />
+    <ClInclude Include="RecastBuffCondition.h" />
+    <ClInclude Include="RecastDebuffCondition.h" />
+    <ClInclude Include="RemoveAuraAbility.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SequenceAbilities.h" />
+    <ClInclude Include="SkillAbility.h" />
+    <ClInclude Include="SpawnCondition.h" />
+    <ClInclude Include="SpellAbility.h" />
+    <ClInclude Include="SpellUtils.h" />
+    <ClInclude Include="StandingCondition.h" />
+    <ClInclude Include="StateCondition.h" />
+    <ClInclude Include="StateManager.h" />
+    <ClInclude Include="SummonedItemAbility.h" />
+    <ClInclude Include="TimerCondition.h" />
+    <ClInclude Include="Token.h" />
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="XTarRangeCondition.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MQ2Miku.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
