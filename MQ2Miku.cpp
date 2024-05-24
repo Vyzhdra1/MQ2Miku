@@ -25,7 +25,7 @@ PLUGIN_VERSION(0.1);
 #include "MikuMovementUtils.h"
 #include "SettingManager.h"
 #include "SpawnManager.h"
-#include "HealingM anager.h"
+#include "HealingManager.h"
 #include "MeleeUtils.h"
 
 //Setup stuff
