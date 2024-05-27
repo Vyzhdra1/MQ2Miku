@@ -71,6 +71,9 @@
     <ClCompile>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp17</LanguageStandard>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">sqlite3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
@@ -79,6 +82,7 @@
     <OutDir>..\..\..\Very Vanilla\plugins\</OutDir>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="DbConnection.h" />
     <ClCompile Include="FollowBehaviour.cpp" />
     <ClCompile Include="MQ2Miku.cpp" />
   </ItemGroup>
@@ -108,9 +112,15 @@
     <ClInclude Include="BuffExistsCondition.h" />
     <ClInclude Include="BuffMonitor.h" />
     <ClInclude Include="BuffMonitorManager.h" />
+    <ClInclude Include="CharacterContext.h" />
+    <ClInclude Include="ContextBase.h" />
     <ClInclude Include="DbCharacter.h" />
+    <ClInclude Include="DbInitialiser.h" />
     <ClInclude Include="DbSettings.h" />
-    <ClInclude Include="GlobalWorkspace.h" />
+    <ClInclude Include="DbManager.h" />
+    <ClInclude Include="DbSettingsOverride.h" />
+    <ClInclude Include="IntParameter.h" />
+    <ClInclude Include="ParameterBase.h" />
     <ClInclude Include="PlayerBuffProperties.h" />
     <ClInclude Include="BuffStatusQueryCommand.h" />
     <ClInclude Include="BuffStatusRequestCommand.h" />
@@ -131,6 +141,8 @@
     <ClInclude Include="GlobalKeys.h" />
     <ClInclude Include="HealingManager.h" />
     <ClInclude Include="MeleeUtils.h" />
+    <ClInclude Include="PlayerManager.h" />
+    <ClInclude Include="Query.h" />
     <ClInclude Include="SettingCondition.h" />
     <ClInclude Include="EncounterManager.h" />
     <ClInclude Include="EncounterStep.h" />
@@ -142,6 +154,7 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="HasPetCondition.h" />
     <ClInclude Include="SettingsContext.h" />
+    <ClInclude Include="SettingsOverrideContext.h" />
     <ClInclude Include="SpawnManager.h" />
     <ClInclude Include="InRangeCondition.h" />
     <ClInclude Include="InvisibleCondition.h" />
@@ -151,7 +164,11 @@
     <ClInclude Include="MovingCondition.h" />
     <ClInclude Include="SettingManager.h" />
     <ClInclude Include="PlayerTarget.h" />
+    <ClInclude Include="SqlResult.h" />
+    <ClInclude Include="SqlRow.h" />
+    <ClInclude Include="SqlValue.h" />
     <ClInclude Include="StoredObject.h" />
+    <ClInclude Include="StringParameter.h" />
     <ClInclude Include="TargetAbility.h" />
     <ClInclude Include="HealthCondition.h" />
     <ClInclude Include="ItemAbility.h" />

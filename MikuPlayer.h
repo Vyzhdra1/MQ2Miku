@@ -1,16 +1,20 @@
-#ifndef MIKUPLAYER
-#define MIKUPLAYER
+#pragma once
 #include "Utils.h"
 #include "PlayerUtils.h"
 #include "MeleeUtils.h"
 #include "StateManager.h"
 #include "ActionManager.h"
 #include "GameManager.h"
+#include <mq/Plugin.h>
 
 class MikuPlayer
 {
 protected:
-	char* _ClassName;
+	std::string _ClassName;
+	int _Level;
+	std::string _Server;
+	std::string _Name;
+	std::string _AccountName;
 	StateManager* _StateManager;
 	ActionManager* _ActionManager;
 
@@ -23,23 +27,48 @@ protected:
 
 	virtual void InitClass() = 0;
 public:
-	ActionManager* GetActionManager() {
-		return _ActionManager;
+	MikuPlayer() {
+		_ClassName = pEverQuest->GetClassThreeLetterCode(GetPcProfile()->Class);
+		_Level = GetPcProfile()->Level;
+		_Name = GetCharInfo()->Name;
+		_Server = GetServerShortName();
+		_AccountName = GetLoginName();
+
+		_ActionManager = new ActionManager();
+		_StateManager = GameManager::GetStateManager();
 	}
 
 	~MikuPlayer() {
 		delete _ActionManager;
 	}
 
-	void Init() {
-		_ActionManager = new ActionManager();
-		_StateManager = GameManager::GetStateManager();
-
-		InitClass();
+	std::string GetClassName() {
+		return _ClassName;
 	}
 
-	char* ClassName() {
-		return _ClassName;
+	const int GetLevel() {
+		return _Level;
+	}
+
+	std::string GetServer() {
+		return _Server;
+	}
+
+	std::string GetName() {
+		return _Name;
+	}
+
+	std::string GetAccountName() {
+		return _AccountName;
+	}
+
+	ActionManager* GetActionManager() {
+		return _ActionManager;
+	}
+
+	void Init() {
+
+		InitClass();
 	}
 
 	void InitiateBurn(PSPAWNINFO pChar, char* aTarget, int aCommander) {
@@ -122,18 +151,6 @@ public:
 	}
 
 	void ParseChat(const char* Line, DWORD Color) {
-	/*	if (!strcmp(Line, "Auto attack is on.")) {
-			InitiateAttack(GetCharInfo()->pSpawn, "", 0);
-		}
-		if (!strcmp(Line, "Auto fire on.")) {
-			InitiateAttack(GetCharInfo()->pSpawn, "", 0);
-		}
-		if (!strcmp(Line, "Auto fire off.")) {
-			InitiateBackOff();
-		}
-		if (!strcmp(Line, "Auto attack is off.")) {
-			InitiateBackOff();
-		}*/
 		if (!strcmp(Line, "You escape from combat and evade your opponents.")) {
 			InitiateBackOff();
 		}
@@ -169,4 +186,3 @@ public:
 		return _Role;
 	}
 };
-#endif

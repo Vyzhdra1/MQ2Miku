@@ -16,7 +16,7 @@ public:
 	}
 
 	void PointToClassFile(MikuPlayer* aPlayer) {
-		sprintf_s(INIFileName, "%s\\config\\MQ2Miku\\class\\Miku_%s.ini", gPathMQRoot, aPlayer->ClassName());
+		sprintf_s(INIFileName, "%s\\config\\MQ2Miku\\class\\Miku_%s.ini", gPathMQRoot, aPlayer->GetClassName().c_str());
 	}
 
 	void PointToGeneralFile() {

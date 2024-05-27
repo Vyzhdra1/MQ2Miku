@@ -55,6 +55,12 @@
     <Filter Include="Source Files\Workspace\StoredObject">
       <UniqueIdentifier>{f3669575-eb84-4cbd-8c99-377c49ce4451}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Workspace\Parameter">
+      <UniqueIdentifier>{79ccf2fa-f07e-4882-918e-2046d922d0b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Workspace\SqlResult">
+      <UniqueIdentifier>{b5505ed3-5793-449d-b79d-c5d617bf960b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MQ2Miku.cpp">
@@ -62,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="FollowBehaviour.cpp">
       <Filter>Source Files\Behaviour\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="DbConnection.h">
+      <Filter>Source Files\Workspace</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -338,9 +347,6 @@
     <ClInclude Include="PlayerBuffProperties.h">
       <Filter>Source Files\Player</Filter>
     </ClInclude>
-    <ClInclude Include="GlobalWorkspace.h">
-      <Filter>Source Files\Workspace</Filter>
-    </ClInclude>
     <ClInclude Include="DbCharacter.h">
       <Filter>Source Files\Workspace\StoredObject</Filter>
     </ClInclude>
@@ -352,6 +358,48 @@
     </ClInclude>
     <ClInclude Include="SettingsContext.h">
       <Filter>Source Files\Workspace\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="ContextBase.h">
+      <Filter>Source Files\Workspace\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterContext.h">
+      <Filter>Source Files\Workspace\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="DbManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="DbInitialiser.h">
+      <Filter>Source Files\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterBase.h">
+      <Filter>Source Files\Workspace\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="StringParameter.h">
+      <Filter>Source Files\Workspace\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="IntParameter.h">
+      <Filter>Source Files\Workspace\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="SqlRow.h">
+      <Filter>Source Files\Workspace\SqlResult</Filter>
+    </ClInclude>
+    <ClInclude Include="Query.h">
+      <Filter>Source Files\Workspace\SqlResult</Filter>
+    </ClInclude>
+    <ClInclude Include="SqlResult.h">
+      <Filter>Source Files\Workspace\SqlResult</Filter>
+    </ClInclude>
+    <ClInclude Include="SqlValue.h">
+      <Filter>Source Files\Workspace\SqlResult</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsOverrideContext.h">
+      <Filter>Source Files\Workspace\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="DbSettingsOverride.h">
+      <Filter>Source Files\Workspace\StoredObject</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerManager.h">
+      <Filter>Source Files\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,12 @@ public:
 	}
 
 	virtual void ParseNextValue(std::string aValue) override {
-		_Setting = aValue;
+		if (SettingManager::Get()->HasSetting(aValue)) {
+			_Setting = aValue;
+		}
+		else {
+			_Value = aValue;
+		}
 	}
 };
 

@@ -27,10 +27,11 @@ PLUGIN_VERSION(0.1);
 #include "SpawnManager.h"
 #include "HealingManager.h"
 #include "MeleeUtils.h"
+#include "DbManager.h"
+#include "DbInitialiser.h"
 
 //Setup stuff
 MikuPlayer * _Player = 0;
-bool MikuMikuOn = true;
 
 //QBUFF
 unsigned long gLastUpdate = 0;
@@ -108,10 +109,11 @@ void Init() {
     _Player->Init();
 
 	MikuMovementUtils::UpdateLocation();
+	DbInitialiser::Load(DbManager::Get(), _Player);
+
 
     ConfigManager * lConfig = new ConfigManager();
     lConfig->Load(_Player);
-	SettingManager::Get()->UpdateSetting(ROLE_STR, _Player->GetRole());
 
     DebugSpew("Class Set");
     delete lConfig;
@@ -128,6 +130,7 @@ void DeInit() {
 	HealingManager::Deinit();
 	AbilityManager::Deinit();
 	GameManager::Deinit();
+	DbManager::Deinit();
 }
 
 /**
@@ -247,6 +250,7 @@ PLUGIN_API void SetGameState(int GameState)
  */
 PLUGIN_API void OnPulse()
 {
+
 /*
 	static std::chrono::steady_clock::time_point PulseTimer = std::chrono::steady_clock::now();
 	// Run only after timer is up
@@ -569,9 +573,7 @@ void MikuBroadcastFollow(PSPAWNINFO pChar, PCHAR szLine)
 
 void MikuTest(PSPAWNINFO pChar, PCHAR szLine)
 {
-	char lCommandStr[] = "c=fol;b=dge;";
-	char* lCommandStrPtr = &lCommandStr[0];
-	HandleCommand(pChar, lCommandStrPtr, BroadcastCommand::Execute);
+	//GlobalWorkspace::Get()->GetSettingsContext()->Load();
 }
 
 void MikuSet(PSPAWNINFO pChar, PCHAR szLine) {

@@ -5,7 +5,11 @@
 #include <map>
 #include <stack>
 #include <string>
-
+#include <sstream>
+#include "Utils.h"
+#include "SqlRow.h"
+#include "StoredObject.h"
+/*
 inline static std::string UPDATE_DELAY_STR = "updatedelay";
 inline static std::string USER_DELAY_STR = "userdelay";
 inline static std::string COMBAT_TIMER_STR = "combattimer";
@@ -27,9 +31,9 @@ inline static std::string HEALER_STR = "healer";
 inline static std::string MEZ_STR = "mez";
 inline static std::string TARGETEDAE_STR = "targetae";
 inline static std::string PBAOE_STR = "pbae";
-
-class DbSetting {
-public:
+*/
+class DbSettings: public StoredObject {
+private:
 	std::string _Name = "";
 	bool _AsString = true;
 	std::string _Value = "";
@@ -39,52 +43,32 @@ public:
 	int _Max = -1;
 	std::function<bool(std::string aValue)> _ValidationFunction = 0;
 
-	MikuSetting() {}
+	void InitValidStringValues(std::string aValues) {
+		if (aValues.empty()) return;
 
-	MikuSetting(std::string aName, std::string aValue, std::set<std::string> aValidStringValues) {
-		_Name = aName;
-		_Value = aValue;
-		_ValidStringValues = aValidStringValues;
-		_AsString = true;
-	}
-
-	MikuSetting(std::string aName, int aValue, int aMin, int aMax) {
-		_Name = aName;
-		_IntegerValue = aValue;
-		_Min = aMin;
-		_Max = aMax;
-		_Value = std::to_string(aValue);
-		_AsString = false;
-	}
-
-	void SetString(std::string aValue) {
-		if (!ValidateString(aValue)) {
-			Utils::MikuEcho(Utils::FAIL_COLOR, "Invalid setting value: ", aValue);
-			return;
+		std::istringstream lStringStream(aValues);
+		std::string lString;
+		while (getline(lStringStream, lString, ',')) {
+			_ValidStringValues.insert(lString);
 		}
-
-		_Value = aValue;
-		Utils::MikuEcho(Utils::SUCCESS_COLOR, _Name + " updated: ", _Value);
 	}
+public:
+	DbSettings() : StoredObject() {}
 
-	void SetInt(std::string aValue) {
-		if (!ValidateGenericInteger(aValue)) {
-			Utils::MikuEcho(Utils::FAIL_COLOR, "Invalid setting value: ", aValue);
-			return;
-		}
+	DbSettings(SqlRow aRow) : StoredObject() {
+		_Name = aRow.GetValue("Name").AsString();
+		_Value = aRow.GetValue("Value").AsString();
+		_AsString = !aRow.GetValue("ValueType").AsString().compare("S");
 
-		_Value = aValue;
-		_IntegerValue = Utils::StrToInt(aValue.c_str(), _Min - 1);
-		Utils::MikuEcho(Utils::SUCCESS_COLOR, _Name + " updated: ", _Value);
-	}
-
-	void SetValue(std::string aValue) {
 		if (_AsString) {
-			SetString(aValue);
+			InitValidStringValues(aRow.GetValue("ValidStrings").AsString());
 		}
 		else {
-			SetInt(aValue);
+			_IntegerValue = Utils::StrToInt(_Value.c_str(), -1);
+			_Min = aRow.GetValue("MinValue").AsInt();
+			_Max = aRow.GetValue("MaxValue").AsInt();
 		}
+		_IsLoaded = true;
 	}
 
 	bool ValidateGenericInteger(std::string aValue) {
@@ -96,11 +80,28 @@ public:
 		return _ValidStringValues.find(aValue) != _ValidStringValues.end();
 	}
 
+	bool Validate(std::string aNewValue) {
+		if (_AsString) {
+			return ValidateString(aNewValue);
+		}
+		else {
+			return ValidateGenericInteger(aNewValue);
+		}
+	}
+
+	bool IsString() {
+		return _AsString;
+	}
+
 	std::string GetValue() {
 		return _Value;
 	}
 
 	int GetValueAsInt() {
 		return _IntegerValue;
+	}
+
+	std::string GetName() {
+		return _Name;
 	}
 };
