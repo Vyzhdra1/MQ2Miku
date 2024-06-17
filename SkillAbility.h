@@ -5,16 +5,31 @@
 class SkillAbility : public Ability
 {
 private:
-	PALTABILITY _Ability;
 	unsigned int _SkillID = 0;
 public:
 	static const char* ConfigKey;
 
-	bool AbilityFound() {
-		_SkillID = Utils::StrToInt(GetKey(), 0);
-		if (_SkillID < 100 && (pSkillMgr->pSkill[_SkillID]->Activated && GetPcProfile()->Skill[_SkillID])) return true;
-		if (_SkillID > 100 && _SkillID < 128 && GetPcProfile()->Skill[_SkillID] != 0xFF && strlen(szSkills[_SkillID]) > 3) return true;
+	SkillAbility() {}
+
+	SkillAbility(std::string aKey, int aSkillID) {
+		SetKey(aKey);
+		SetName(aKey);
+		_SkillID = aSkillID;
+	}
+
+	static bool HasSkill(unsigned int aSkillID) {
+		if (aSkillID < 100 && (pSkillMgr->pSkill[aSkillID]->Activated && GetPcProfile()->Skill[aSkillID])) return true;
+		if (aSkillID > 100 && aSkillID < 128 && GetPcProfile()->Skill[aSkillID] != 0xFF && strlen(szSkills[aSkillID]) > 3) return true;
 		return false;
+	}
+
+	virtual bool IsLoaded() override {
+		return true;
+	}
+
+	bool AbilityFound() {
+		_SkillID = Utils::StrToInt(GetKey().c_str(), 0);
+		return HasSkill(_SkillID);
 	}
 
 	bool AbilityReady() {

@@ -61,6 +61,12 @@
     <Filter Include="Source Files\Workspace\SqlResult">
       <UniqueIdentifier>{b5505ed3-5793-449d-b79d-c5d617bf960b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Workspace\DbManager">
+      <UniqueIdentifier>{feeba614-07b3-4bd8-94d6-dade4c54e6a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DatabaseUtil">
+      <UniqueIdentifier>{d39338ec-c65d-4e14-b12e-f17b37d69844}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MQ2Miku.cpp">
@@ -71,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="DbConnection.h">
       <Filter>Source Files\Workspace</Filter>
+    </ClCompile>
+    <ClCompile Include="AlternateAbilitiesContext.h">
+      <Filter>Source Files\Workspace\Context</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -317,9 +326,6 @@
     <ClInclude Include="AuraCondition.h">
       <Filter>Source Files\Condition</Filter>
     </ClInclude>
-    <ClInclude Include="BuffAction.h">
-      <Filter>Source Files\Ability</Filter>
-    </ClInclude>
     <ClInclude Include="BuffMonitor.h">
       <Filter>Source Files\Ability\Sets</Filter>
     </ClInclude>
@@ -365,12 +371,6 @@
     <ClInclude Include="CharacterContext.h">
       <Filter>Source Files\Workspace\Context</Filter>
     </ClInclude>
-    <ClInclude Include="DbManager.h">
-      <Filter>Source Files\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="DbInitialiser.h">
-      <Filter>Source Files\Config</Filter>
-    </ClInclude>
     <ClInclude Include="ParameterBase.h">
       <Filter>Source Files\Workspace\Parameter</Filter>
     </ClInclude>
@@ -399,6 +399,63 @@
       <Filter>Source Files\Workspace\StoredObject</Filter>
     </ClInclude>
     <ClInclude Include="PlayerManager.h">
+      <Filter>Source Files\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="DbLoader.h">
+      <Filter>Source Files\Workspace\DbManager</Filter>
+    </ClInclude>
+    <ClInclude Include="DbManager.h">
+      <Filter>Source Files\Workspace\DbManager</Filter>
+    </ClInclude>
+    <ClInclude Include="DbUpdater.h">
+      <Filter>Source Files\Workspace\DbManager</Filter>
+    </ClInclude>
+    <ClInclude Include="DbSpell.h">
+      <Filter>Source Files\Workspace\StoredObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SpellsContext.h">
+      <Filter>Source Files\Workspace\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="GearExporter.h">
+      <Filter>Source Files\DatabaseUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="DbGear.h">
+      <Filter>Source Files\Workspace\StoredObject</Filter>
+    </ClInclude>
+    <ClInclude Include="DbAugmentation.h">
+      <Filter>Source Files\Workspace\StoredObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GearContext.h">
+      <Filter>Source Files\Workspace\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="BoolParameter.h">
+      <Filter>Source Files\Workspace\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="RebuffCondition.h">
+      <Filter>Source Files\Condition</Filter>
+    </ClInclude>
+    <ClInclude Include="DbAlternateAbilities.h">
+      <Filter>Source Files\Workspace\StoredObject</Filter>
+    </ClInclude>
+    <ClInclude Include="DbAbilityLoader.h">
+      <Filter>Source Files\Workspace\DbManager</Filter>
+    </ClInclude>
+    <ClInclude Include="DbCommand.h">
+      <Filter>Source Files\Workspace\StoredObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandContext.h">
+      <Filter>Source Files\Workspace\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="DbItemAbility.h">
+      <Filter>Source Files\Workspace\StoredObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemAbilityContext.h">
+      <Filter>Source Files\Workspace\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="StringListQuery.h">
+      <Filter>Source Files\Workspace\DbManager</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockedSpellsManager.h">
       <Filter>Source Files\Manager</Filter>
     </ClInclude>
   </ItemGroup>

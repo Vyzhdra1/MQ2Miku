@@ -15,6 +15,8 @@ PLUGIN_VERSION(0.1);
 #include "Utils.h"
 #include "ConfigManager.h"
 
+#include "GearExporter.h"
+
 #include "BroadcastCommand.h"
 #include "ActivateCommand.h"
 #include "AssistCommand.h"
@@ -26,12 +28,14 @@ PLUGIN_VERSION(0.1);
 #include "SettingManager.h"
 #include "SpawnManager.h"
 #include "HealingManager.h"
+#include "BlockedSpellsManager.h"
 #include "MeleeUtils.h"
 #include "DbManager.h"
-#include "DbInitialiser.h"
+#include "DbUpdater.h"
 
 //Setup stuff
 MikuPlayer * _Player = 0;
+DbUpdater* _DbUpdater = 0;
 
 //QBUFF
 unsigned long gLastUpdate = 0;
@@ -108,8 +112,9 @@ void Init() {
     }
     _Player->Init();
 
+	_DbUpdater = new DbUpdater();
+
 	MikuMovementUtils::UpdateLocation();
-	DbInitialiser::Load(DbManager::Get(), _Player);
 
 
     ConfigManager * lConfig = new ConfigManager();
@@ -125,11 +130,17 @@ void DeInit() {
         _Player = 0;
     }
 
+	if (_DbUpdater) {
+		delete _DbUpdater;
+		_DbUpdater = 0;
+	}
+
 	SettingManager::Deinit();
 	SpawnManager::Deinit();
 	HealingManager::Deinit();
 	AbilityManager::Deinit();
 	GameManager::Deinit();
+	BlockedSpellsManager::Deinit();
 	DbManager::Deinit();
 }
 
@@ -264,6 +275,10 @@ PLUGIN_API void OnPulse()
     if (gGameState != GAMESTATE_INGAME || !_Player) return;
 
 	MeleeUtils::MonitorKeyPress();
+
+	if (_DbUpdater) {
+		_DbUpdater->OnPulse();
+	}
 
 	unsigned long lClockTime = Utils::GetClockTime();
 
@@ -580,9 +595,29 @@ void MikuSet(PSPAWNINFO pChar, PCHAR szLine) {
 	SettingManager::Get()->ParseCommand(szLine);
 }
 
+void MikuReportX(std::string aReportType) {
+	std::string LOWSPELLS_STR = "lowspells";
+	std::string ABILITIES_STR = "abilities";
+	std::string EXPORTGEAR_STR = "exportgear";
+
+	if (!LOWSPELLS_STR.compare(aReportType)) {
+		AbilityManager::Get()->ReportLowSpells();
+	}
+	else if (!ABILITIES_STR.compare(aReportType)) {
+		AbilityManager::Get()->ReportAbilities();
+	}
+	else if (!EXPORTGEAR_STR.compare(aReportType)) {
+		GearExporter::Export();
+	}
+	else {
+		Utils::MikuEcho(Utils::FAIL_COLOR, "Unknown Report Type Command: ", aReportType);
+	}
+}
+
 void MikuReport(PSPAWNINFO pChar, PCHAR szLine)
 {
-	_Player->Report();
+	MikuReportX(szLine);
+	//_Player->Report();
 }
 
 PLUGIN_API VOID OnEndZone(VOID)
@@ -601,21 +636,10 @@ PLUGIN_API VOID OnBeginZone(VOID)
 //  DeInit();
 }
 
-void MikuReportX(std::string aReportType) {
-	std::string LOWSPELLS_STR = "lowspells";
-
-	if (!LOWSPELLS_STR.compare(aReportType)) {
-		AbilityManager::Get()->ReportLowSpells();
-		return;
-	}
-	else {
-		Utils::MikuEcho(Utils::FAIL_COLOR, "Unknown Report Type Command: ", aReportType);
-	}
-}
-
 void MikuAction(PSPAWNINFO pChar, PCHAR szLine) {
 	std::string REPORT_STR = "report";
 	std::string REGISTER_STR = "register";
+	std::string LOADXTAR_STR = "loadxtar";
 
 	std::vector<std::string> lParams = Utils::GetParamList(szLine);
 
@@ -642,6 +666,10 @@ void MikuAction(PSPAWNINFO pChar, PCHAR szLine) {
 	}
 	else if (!REGISTER_STR.compare(lAction)) {
 		HealingManager::Get()->RegisterTarget(lActionArgument);
+		return;
+	}
+	else if (!LOADXTAR_STR.compare(lAction)) {
+		HealingManager::Get()->SetXTargets();
 		return;
 	}
 	else {

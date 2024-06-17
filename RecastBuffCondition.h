@@ -24,10 +24,16 @@ public:
 	}
 
 	bool ConditionMet(Ability * aAbility) {
+		if (!aAbility->GetSpell()) {
+			return false;
+		}
+
 		PcProfile * lCharInfo = GetPcProfile();
 		for (unsigned long nBuff = 0; nBuff < NUM_LONG_BUFFS; nBuff++)
 		{
-			if (lCharInfo->GetEffect(nBuff).SpellID == aAbility->GetSpellID())
+			PSPELL lSpell = GetSpellByID(lCharInfo->GetEffect(nBuff).SpellID);
+			if (!lSpell) continue;
+			if ((lCharInfo->GetEffect(nBuff).SpellID == aAbility->GetSpellID()) || (lSpell->SpellGroup == aAbility->GetSpell()->SpellGroup))
 			{
 				return lCharInfo->GetEffect(nBuff).Duration < _TimeRemaining;
 			}
@@ -35,7 +41,11 @@ public:
 
 		for (unsigned long nBuff = 0; nBuff < NUM_SHORT_BUFFS; nBuff++)
 		{
-			if (lCharInfo->GetTempEffect(nBuff).SpellID == aAbility->GetSpellID())
+			PSPELL lSpell = GetSpellByID(lCharInfo->GetTempEffect(nBuff).SpellID);
+
+			if (!lSpell) continue;
+
+			if ((lCharInfo->GetTempEffect(nBuff).SpellID == aAbility->GetSpellID()) || (lSpell->SpellGroup == aAbility->GetSpell()->SpellGroup))
 			{
 				return lCharInfo->GetTempEffect(nBuff).Duration < _TimeRemaining;
 			}

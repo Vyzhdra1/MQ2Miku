@@ -14,6 +14,7 @@ private:
 	std::string _Name = "";
 protected:
 	PSPELL _Spell = 0;
+	bool _IsBuff = false;
 	std::set<PSPELL> _TriggerSpells;
 	int _LevelRange = 0;
 	int _LevelMod = 0;
@@ -32,8 +33,8 @@ public:
 
 		for (int lIndex = 0; lIndex < GetSpell()->GetNumEffects(); lIndex++) {
 			int lSPA = GetSpellAttrib(_Spell, lIndex);
-
 			int lID = (int) GetSpellBase2(_Spell, lIndex);
+
 			if ((lSPA == SPA_CHANCE_BEST_IN_SPELL_GROUP) || (lSPA == SPA_TRIGGER_BEST_IN_SPELL_GROUP)) {
 				std::set<PSPELL> lGroupSpells = SpellUtils::GetSpellsBySpellGroupID(lID);
 				_TriggerSpells.insert(std::begin(lGroupSpells), std::end(lGroupSpells));
@@ -43,10 +44,11 @@ public:
 				if (!lSpell) continue;
 				_TriggerSpells.insert(lSpell);
 			}
-			else {
-				continue;
-			}
 		}
+	}
+
+	virtual bool IsLoaded() {
+		return false;
 	}
 
 	bool HasTriggerSpells() {
@@ -81,8 +83,8 @@ public:
 		_Key = aKey;
 	}
 
-	const char * GetKey() {
-		return _Key.c_str();
+	const std::string GetKey() {
+		return _Key;
 	}
 
 	virtual DWORD GetSpellID() {

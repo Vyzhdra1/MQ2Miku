@@ -36,10 +36,6 @@ public:
 		return _Enabled;
 	}
 
-	bool AbilityFound() {
-		return _Ability->AbilityFound();
-	}
-
 	bool AbilityReady() {
 		return _Ability->AbilityReady();
 	}

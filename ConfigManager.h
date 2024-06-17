@@ -135,12 +135,12 @@ public:
 				delete lAbility;
 				continue;
 			}
-
-			AbilityManager::Get()->AddAbility(lID, lAbility);
 			lAbility->EchoLoadSuccessMessage();
 			if (lLoadTrigger) {
 				lAbility->LoadTriggerSpells();
 			}
+
+			AbilityManager::Get()->AddAbility(lID, lAbility);
 		}
 	}
 

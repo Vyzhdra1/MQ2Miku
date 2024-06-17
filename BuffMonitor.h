@@ -2,6 +2,7 @@
 
 #include "AbilityCollectionAbility.h"
 #include "PlayerUtils.h"
+#include "Utils.h"
 #include "BuffAction.h"
 #include <set>
 
@@ -48,7 +49,7 @@ public:
 
 		PollBuffs();
 
-		if (!lSpawn) return false;
+		//if (!lSpawn) return false;
 
 		for (Action* lAction : _Abilities) {
 			BuffAction* lBuffAction = (BuffAction*)lAction;
@@ -60,10 +61,11 @@ public:
 			if (!lBuffAction->IsMemorized()) return true;
 
 			if (!lBuffAction->AbilityReady()) return false;
-
+			/*
 			if ((*lIterator)->AbilityReady() && (*lIterator)->ConditionsMet()) {
 				Utils::TargetByID(GetCharInfo()->pSpawn, lSpawn->SpawnID);
 			}
+			*/
 
 			if (CastSelectedAbility(lBuffAction)) {
 

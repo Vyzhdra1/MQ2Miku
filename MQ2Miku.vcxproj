@@ -82,6 +82,7 @@
     <OutDir>..\..\..\Very Vanilla\plugins\</OutDir>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="AlternateAbilitiesContext.h" />
     <ClCompile Include="DbConnection.h" />
     <ClCompile Include="FollowBehaviour.cpp" />
     <ClCompile Include="MQ2Miku.cpp" />
@@ -103,9 +104,10 @@
     <ClInclude Include="BackoffCommand.h" />
     <ClInclude Include="BannedTargetCondition.h" />
     <ClInclude Include="Behaviour.h" />
+    <ClInclude Include="BlockedSpellsManager.h" />
     <ClInclude Include="BooleanCondition.h" />
+    <ClInclude Include="BoolParameter.h" />
     <ClInclude Include="BroadcastCommand.h" />
-    <ClInclude Include="BuffAction.h" />
     <ClInclude Include="BuffAbilities.h" />
     <ClInclude Include="BuffActiveCondition.h" />
     <ClInclude Include="BuffCondition.h" />
@@ -113,13 +115,25 @@
     <ClInclude Include="BuffMonitor.h" />
     <ClInclude Include="BuffMonitorManager.h" />
     <ClInclude Include="CharacterContext.h" />
+    <ClInclude Include="CommandContext.h" />
     <ClInclude Include="ContextBase.h" />
+    <ClInclude Include="DbAbilityLoader.h" />
+    <ClInclude Include="DbAlternateAbilities.h" />
+    <ClInclude Include="DbAugmentation.h" />
     <ClInclude Include="DbCharacter.h" />
-    <ClInclude Include="DbInitialiser.h" />
+    <ClInclude Include="DbCommand.h" />
+    <ClInclude Include="DbGear.h" />
+    <ClInclude Include="DbItemAbility.h" />
+    <ClInclude Include="DbLoader.h" />
     <ClInclude Include="DbSettings.h" />
     <ClInclude Include="DbManager.h" />
     <ClInclude Include="DbSettingsOverride.h" />
+    <ClInclude Include="DbSpell.h" />
+    <ClInclude Include="DbUpdater.h" />
+    <ClInclude Include="GearContext.h" />
+    <ClInclude Include="GearExporter.h" />
     <ClInclude Include="IntParameter.h" />
+    <ClInclude Include="ItemAbilityContext.h" />
     <ClInclude Include="ParameterBase.h" />
     <ClInclude Include="PlayerBuffProperties.h" />
     <ClInclude Include="BuffStatusQueryCommand.h" />
@@ -143,6 +157,7 @@
     <ClInclude Include="MeleeUtils.h" />
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="Query.h" />
+    <ClInclude Include="RebuffCondition.h" />
     <ClInclude Include="SettingCondition.h" />
     <ClInclude Include="EncounterManager.h" />
     <ClInclude Include="EncounterStep.h" />
@@ -164,10 +179,12 @@
     <ClInclude Include="MovingCondition.h" />
     <ClInclude Include="SettingManager.h" />
     <ClInclude Include="PlayerTarget.h" />
+    <ClInclude Include="SpellsContext.h" />
     <ClInclude Include="SqlResult.h" />
     <ClInclude Include="SqlRow.h" />
     <ClInclude Include="SqlValue.h" />
     <ClInclude Include="StoredObject.h" />
+    <ClInclude Include="StringListQuery.h" />
     <ClInclude Include="StringParameter.h" />
     <ClInclude Include="TargetAbility.h" />
     <ClInclude Include="HealthCondition.h" />

@@ -18,7 +18,7 @@ private:
 	inline static int _FailedRangeCount = 0;
 public:
 	static long GetRangeOffset() {
-		double lDistance = ((PSPAWNINFO)pTarget)->AvatarHeight + 9.0f - (IsMobFleeing(pControlledPlayer, pTarget) * 3.0f);
+		long lDistance = ((PSPAWNINFO)pTarget)->AvatarHeight + 9.0f - (IsMobFleeing(pControlledPlayer, pTarget) * 3.0f);
 		switch (MELEE_MODE) {
 		case MELEEMODE_NONE: return 0;
 		case MELEEMODE_MELEE: return lDistance;
@@ -107,7 +107,7 @@ public:
 		if (MELEE_MODE == MELEEMODE::MELEEMODE_NONE) {
 			return;
 		}
-		float lMeleeRange = GetRangeOffset();// get_melee_range(pControlledPlayer, pTarget) + GetRangeOffset();
+		float lMeleeRange = GetRangeOffset();
 		std::string lCommand = fmt::format(GetStick(), std::to_string(lMeleeRange));
 
 		Utils::MikuEcho(Utils::BLUE_COLOR, "Stick Command: ", lCommand);

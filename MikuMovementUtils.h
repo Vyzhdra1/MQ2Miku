@@ -12,7 +12,7 @@ public:
 		if (!GetCharInfo()) return;
 		if (!GetCharInfo()->pSpawn) return;
 
-		if (IsMoving() || !PlayerUtils::IsStanding() || Utils::IsCasting() || PlayerUtils::IsSticking()) {
+		if (IsMoving() || Utils::IsCasting() || PlayerUtils::IsSticking()) {
 			_StoppedMovingTimer = Utils::GetClockTime();
 			_StoppedTime = 0;
 		}

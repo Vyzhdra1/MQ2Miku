@@ -1,7 +1,7 @@
-#ifndef H_CommandAbility
-#define H_CommandAbility
+#pragma once
 #include "Ability.h"
 #include "PlayerUtils.h"
+#include "DbCommand.h"
 
 class CommandAbility : public Ability
 {
@@ -9,7 +9,18 @@ private:
 public:
 	static const char* ConfigKey;
 
+	CommandAbility() {}
+
+	CommandAbility(DbCommand* aDbCommand) {
+		SetKey(aDbCommand->GetCommandText());
+		SetName(aDbCommand->GetCommandKey());
+	}
+
 	bool AbilityFound() {
+		return true;
+	}
+
+	virtual bool IsLoaded() override {
 		return true;
 	}
 
@@ -24,7 +35,7 @@ public:
 	}
 
 	void Cast() {
-		EzCommand(GetKey());
+		EzCommand(GetKey().c_str());
 	}
 
 	void EchoCastMessage(char aSuccessType, char* aMessage) {
@@ -32,7 +43,8 @@ public:
 	}
 
 	virtual void EchoLoadSuccessMessage() {
-		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded Command: ", GetKey());
+		std::string lMessage = "Key: " + GetName() + " | Command: " + GetKey();
+		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded Command: ", lMessage);
 	}
 
 	virtual std::string GetType() {
@@ -41,4 +53,3 @@ public:
 };
 
 const char* CommandAbility::ConfigKey = "command";
-#endif#pragma once

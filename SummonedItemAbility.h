@@ -11,6 +11,10 @@ public:
 		Silence();
 	}
 
+	virtual bool IsLoaded() override {
+		return true;
+	}
+
 	bool AbilityFound()  {
 		return true;
 	}

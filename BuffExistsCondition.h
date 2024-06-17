@@ -1,6 +1,7 @@
 #pragma once
 #include "AbilityCondition.h"
 #include "SpellUtils.h"
+#include "BlockedSpellsManager.h"
 
 class BuffExistsCondition : public AbilityCondition {
 public:
@@ -8,18 +9,27 @@ public:
 
 	BuffExistsCondition(std::set<std::string> aSettings) : AbilityCondition(aSettings) {}
 
+	bool HasBuff(PSPELL aSpell) {
+		bool lCanLandBuff = SpellUtils::CanBuffLand(aSpell);
+		bool lIsInBuffGroup = SpellUtils::IsBuffInSameGroup(aSpell);
+		bool IsSpellBlocked = BlockedSpellsManager::Get()->IsSpellBlocked(aSpell->ID);
+
+		return !lCanLandBuff || lIsInBuffGroup && IsSpellBlocked;
+	}
+
 	virtual bool ConditionMet(Ability* aAbility) override {
-		if (!_Ability) return false;
-		if (!_Ability->GetSpell()) return false;
+		if (!aAbility) return false;
+		if (!aAbility->GetSpell()) return false;
 
-		bool lHasBuff = SpellUtils::HasBuff(_Ability->GetSpellID()) != 0;
+		bool lHasBuff = HasBuff(aAbility->GetSpell());
 
-		if (!_Ability->HasTriggerSpells()) return lHasBuff == _BooleanCondition;
+		if (!aAbility->HasTriggerSpells()) return lHasBuff == _BooleanCondition;
 
-		std::set<PSPELL> lTriggerSpells = _Ability->GetTriggerSpells();
+		lHasBuff = true;
 
+		std::set<PSPELL> lTriggerSpells = aAbility->GetTriggerSpells();
 		for (PSPELL lSpell : lTriggerSpells) {
-			lHasBuff = lHasBuff || SpellUtils::HasBuff(lSpell->ID);
+			lHasBuff = lHasBuff && HasBuff(aAbility->GetSpell());
 		}
 		return lHasBuff == _BooleanCondition;
 	}

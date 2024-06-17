@@ -1,16 +1,23 @@
 #pragma once
 
-#include "MikuPlayer.h"
+#include <vector>
+#include <mq/Plugin.h>
 #include "DbManager.h"
 #include "SettingManager.h"
+#include "DbAbilityLoader.h"
 #include "Utils.h"
 
-class DbInitialiser
+class DbLoader
 {
 private:
-	static void LoadCharacter(DbManager* aDbManager, MikuPlayer* aPlayer) {
+	static void LoadCharacter(DbManager* aDbManager) {
 		DbCharacter * lCharacter = new DbCharacter(
-			aPlayer->GetName(), aPlayer->GetLevel(), aPlayer->GetServer(), aPlayer->GetClassName(), aPlayer->GetAccountName());
+			GetCharInfo()->Name, 
+			GetPcProfile()->Level, 
+			GetServerShortName(), 
+			pEverQuest->GetClassThreeLetterCode(GetPcProfile()->Class), 
+			GetLoginName());
+
 		aDbManager->Load(lCharacter);
 		aDbManager->AssignDbCharacter(lCharacter);
 	}
@@ -24,22 +31,27 @@ private:
 		}
 	}
 
-	static void LoadSettings(DbManager* aDbManager, MikuPlayer* aPlayer) {
-		aDbManager->GetSettingsContext()->SetParameters(aPlayer->GetClassName());
+	static void LoadSettings(DbManager* aDbManager) {
+		aDbManager->GetSettingsContext()->SetParameters(pEverQuest->GetClassThreeLetterCode(GetPcProfile()->Class));
 		aDbManager->GetSettingsContext()->LoadObjects();
 	}
 
 public:
-	static void Load(DbManager* aDbManager, MikuPlayer* aPlayer) {
-		LoadSettings(aDbManager, aPlayer);
-		LoadCharacter(aDbManager, aPlayer);
+	static void Load() {
+		DbManager* lDbManager = DbManager::Get();
+		LoadSettings(lDbManager);
+		LoadCharacter(lDbManager);
 
-		DbCharacter* lCharacter = aDbManager->GetCharacter();
+		DbCharacter* lCharacter = lDbManager->GetCharacter();
 		if (!lCharacter->IsLoaded()) {
 			Utils::MikuEcho(Utils::FAIL_COLOR, "Failed to load character data");
 			return;
 		}
 
-		LoadSettingsOverride(aDbManager, lCharacter);
+		LoadSettingsOverride(lDbManager, lCharacter);
+
+		lDbManager->GetGearContext()->SetParameters(lCharacter->GetCharacterID());
+
+		DbAbilityLoader::Load();
 	}
 };

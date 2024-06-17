@@ -119,17 +119,64 @@ public:
 		return false;
 	}
 
-	void BeginTransaction(Query* aQuery) {
-		if (aQuery->GetMode() == QueryMode::WRITE) {
+	void BeginTransaction(QueryMode aMode) {
+		if (aMode == QueryMode::WRITE) {
 			sqlite3_exec(_Connection, "BEGIN IMMEDIATE TRANSACTION", 0, 0, 0);
 		}
 	}
 
-	void FinaliseTransaction(Query* aQuery, sqlite3_stmt* aStatement) {
+	void FinaliseTransaction(QueryMode aMode, sqlite3_stmt* aStatement) {
 		IsSuccessfulSqlResult(sqlite3_finalize(aStatement));
-		if (aQuery->GetMode() == QueryMode::WRITE) {
+
+		if (aMode == QueryMode::WRITE) {
 			sqlite3_exec(_Connection, "COMMIT", 0, 0, 0);
 		}
+	}
+
+	void BulkQueryDatabasePrepare(
+		std::vector<Query*> * aQueries
+	) {
+		if (!_Connection) {
+			Utils::MikuEcho(Utils::FAIL_COLOR, "Connection not found");
+			return;
+		}
+
+		QueryMode lMode = QueryMode::READ;
+
+		sqlite3_stmt* lStatement = 0;
+		int iReturn = -1;
+		bool lStatementInitialised = false;
+		for (Query* lQuery : *aQueries) {
+			if (!lStatementInitialised) {
+				lMode = lQuery->GetMode();
+				BeginTransaction(lMode);
+				iReturn = sqlite3_prepare_v2(_Connection, lQuery->GetSql().c_str(), -1, &lStatement, NULL);
+				lStatementInitialised = true;
+
+				if (!IsSuccessfulSqlResult(iReturn)) {
+					FinaliseTransaction(lMode, lStatement);
+					return;
+				}
+			}
+
+			int lIndex = 0;
+			for (ParameterBase* lParam : lQuery->GetParams()) {
+				lIndex++;
+
+				if (!IsSuccessfulSqlResult(lParam->Bind(lStatement, lIndex))) {
+					FinaliseTransaction(lMode, lStatement);
+					return;
+				}
+			}
+
+			while (iReturn = sqlite3_step(lStatement) == SQLITE_ROW) {
+				lQuery->AddResultRow(lStatement);
+			}
+
+			sqlite3_reset(lStatement);
+		}
+
+		FinaliseTransaction(lMode, lStatement);
 	}
 
 	void QueryDatabasePrepare(
@@ -140,7 +187,7 @@ public:
 			return;
 		}
 
-		BeginTransaction(aQuery);
+		BeginTransaction(aQuery->GetMode());
 
 		sqlite3_stmt* lStatement;
 		int iReturn = sqlite3_prepare_v2(_Connection, aQuery->GetSql().c_str(), -1, &lStatement, NULL);
@@ -152,7 +199,7 @@ public:
 			lIndex++;
 
 			if (!IsSuccessfulSqlResult(lParam->Bind(lStatement, lIndex))) {
-				FinaliseTransaction(aQuery, lStatement);
+				FinaliseTransaction(aQuery->GetMode(), lStatement);
 				return;
 			}
 		}
@@ -161,7 +208,7 @@ public:
 			aQuery->AddResultRow(lStatement);
 		}
 
-		FinaliseTransaction(aQuery, lStatement);
+		FinaliseTransaction(aQuery->GetMode(), lStatement);
 	}
 
 	std::vector<std::map<std::string, std::string>> QueryDatabase(

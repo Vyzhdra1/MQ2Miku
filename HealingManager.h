@@ -3,11 +3,14 @@
 #include "PlayerUtils.h"
 #include "PlayerTarget.h"
 #include "SettingManager.h"
+#include "StringListQuery.h"
 
 class HealingManager
 {
 private:
 	inline static HealingManager* _Manager = 0;
+
+	std::vector<std::string> _TankNames;
 
 	std::vector<PlayerTarget*> _Targets;
 	std::vector<PlayerTarget*> _OrderedHealth;
@@ -59,6 +62,14 @@ private:
 				_Targets.push_back(lTarget);
 			}
 		}
+
+		for (std::string lTank : _TankNames) {
+			LoadManualTarget(lTank);
+		}
+	}
+
+	void InitTankListFromDB() {
+		_TankNames = StringListQuery::GetTankList();
 	}
 
 	void DestroyTargets() {
@@ -176,6 +187,14 @@ public:
 		if (_Tanks.empty()) return 0;
 			
 		return _Tanks.front()->GetClient();
+	}
+
+	void SetXTargets() {
+		int lIndex = 0;
+		for (std::string lTank : _TankNames) {
+			Utils::MikuSendCommand("/xtarget set " + std::to_string(lIndex) + " " + lTank);
+			lIndex++;
+		}
 	}
 
 	PlayerTarget* GetGroupTank() {

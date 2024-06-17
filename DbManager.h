@@ -4,10 +4,25 @@
 #include <mq/Plugin.h>
 #include "Utils.h"
 #include "DbConnection.h"
+#include "StoredObject.h"
 #include "SettingsContext.h"
+#include "GearContext.h"
 #include "SettingsOverrideContext.h"
+#include "SpellsContext.h"
+#include "ItemAbilityContext.h"
+#include "AlternateAbilitiesContext.h"
 #include "DbCharacter.h"
-#include "MikuPlayer.h"
+#include "CommandContext.h"
+
+enum DbContextType { 
+	SETTINGSCONTEXT, 
+	SETTINGSOVERRIDECONTEXT, 
+	SPELLCONTEXT, 
+	GEARCONTEXT, 
+	ALTERNATEABILITIESCONTEXT,
+	COMMANDCONTEXT,
+	ITEMABILITYCONTEXT
+};
 
 class DbManager
 {
@@ -16,14 +31,11 @@ private:
 	DbConnection* _Connection = 0;
 	DbCharacter* _Character = 0;
 	std::map<std::string, StoredObject*> _WorkspaceCache;
-	SettingsContext* _SettingsContext = 0;
-	SettingsOverrideContext* _SettingsOverrideContext = 0;
+	std::map<DbContextType, ContextBase*> _Contexts;
 public:
 	DbManager() {
 		_Connection = new DbConnection();
 		_Connection->OpenDatabase();
-		_SettingsContext = new SettingsContext(_Connection);
-		_SettingsOverrideContext = new SettingsOverrideContext(_Connection);
 	}
 
 	~DbManager() {
@@ -35,8 +47,10 @@ public:
 			delete _Character;
 		}
 
-		delete _SettingsContext;
-		delete _SettingsOverrideContext;
+		for (const auto& [lKey, lValue] : _Contexts) {
+			delete lValue;
+		}
+		_Contexts.clear();
 	}
 
 	void Save(StoredObject* aObj) {
@@ -45,6 +59,10 @@ public:
 
 	void Load(StoredObject* aObj) {
 		aObj->Load(_Connection);
+	}
+
+	void ExecSql(Query* aQuery) {
+		_Connection->QueryDatabasePrepare(aQuery);
 	}
 
 	void AssignDbCharacter(DbCharacter* aCharacter) {
@@ -56,13 +74,54 @@ public:
 	}
 
 	SettingsContext* GetSettingsContext() {
-		return _SettingsContext;
+		if (!_Contexts.count(SETTINGSCONTEXT)) {
+			_Contexts[SETTINGSCONTEXT] = new SettingsContext(_Connection);
+		}
+		return (SettingsContext*) _Contexts[SETTINGSCONTEXT];
 	}
 
 	SettingsOverrideContext* GetSettingsOverrideContext() {
-		return _SettingsOverrideContext;
+		if (!_Contexts.count(SETTINGSOVERRIDECONTEXT)) {
+			_Contexts[SETTINGSOVERRIDECONTEXT] = new SettingsOverrideContext(_Connection);
+		}
+		return (SettingsOverrideContext*)_Contexts[SETTINGSOVERRIDECONTEXT];
 	}
 
+	SpellsContext* GetSpellsContext() {
+		if (!_Contexts.count(SPELLCONTEXT)) {
+			_Contexts[SPELLCONTEXT] = new SpellsContext(_Connection);
+		}
+		return (SpellsContext*)_Contexts[SPELLCONTEXT];
+	}
+
+	GearContext* GetGearContext() {
+		if (!_Contexts.count(GEARCONTEXT)) {
+			_Contexts[GEARCONTEXT] = new GearContext(_Connection);
+		}
+		return (GearContext*)_Contexts[GEARCONTEXT];
+	}
+	
+	AlternateAbilitiesContext* GetAlternateAbilitiesContext() {
+		if (!_Contexts.count(ALTERNATEABILITIESCONTEXT)) {
+			_Contexts[ALTERNATEABILITIESCONTEXT] = new AlternateAbilitiesContext(_Connection);
+		}
+		return (AlternateAbilitiesContext*)_Contexts[ALTERNATEABILITIESCONTEXT];
+	}
+
+	CommandContext* GetCommandContext() {
+		if (!_Contexts.count(COMMANDCONTEXT)) {
+			_Contexts[COMMANDCONTEXT] = new CommandContext(_Connection);
+		}
+		return (CommandContext*)_Contexts[COMMANDCONTEXT];
+	}
+
+	ItemAbilityContext* GetItemAbilityContext() {
+		if (!_Contexts.count(ITEMABILITYCONTEXT)) {
+			_Contexts[ITEMABILITYCONTEXT] = new ItemAbilityContext(_Connection);
+		}
+		return (ItemAbilityContext*)_Contexts[ITEMABILITYCONTEXT];
+	}
+	
 	static void Deinit() {
 		if (_Workspace) {
 			delete _Workspace;

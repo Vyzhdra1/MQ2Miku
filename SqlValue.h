@@ -20,5 +20,9 @@ public:
 	int AsInt() {
 		return Utils::StrToInt(_Value.c_str(), -1);
 	}
+
+	bool AsBool() {
+		return _Value.compare("Y") == 0;
+	}
 };
 

@@ -12,6 +12,14 @@ private:
 
 public:
 	void AddAbility(std::string aKey, Ability* aAbility) {
+		if (_Abilities.count(aKey) > 0) {
+			Utils::MikuEcho(Utils::FAIL_COLOR, "CLASH FOUND LOADING KEY: ", aKey);
+
+			delete aAbility;
+
+			return;
+		}
+
 		_Abilities[aKey] = aAbility;
 	}
 
@@ -52,6 +60,17 @@ public:
 
 			}
 			lIterator++;
+		}
+	}
+
+	void ReportAbilities() {
+		for (const auto& [lKey, lValue] : _Abilities) {
+			if (lValue->IsLoaded()) {
+				lValue->EchoLoadSuccessMessage();
+			}
+			else {
+				Utils::MikuEcho(Utils::FAIL_COLOR, "Failed to load: ", lKey);
+			}
 		}
 	}
 

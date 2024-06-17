@@ -13,6 +13,11 @@ public:
 	~KillRogueDiscBurnAction() {
 		if (_Stabbing) delete _Stabbing;
 		if (_Chance) delete _Chance;
+		if (_RaggedEdge) delete _RaggedEdge;
+	}
+
+	virtual bool IsLoaded() override {
+		return AbilityFound();
 	}
 
 	virtual bool AbilityFound() {

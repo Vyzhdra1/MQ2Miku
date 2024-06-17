@@ -93,6 +93,7 @@ public:
 		sprintf_s(lMessage, "\a%c%s\ax %s \ap\"%s\"", aColor, lEchoName.c_str(), aMessage.c_str(), aTarget.c_str());
 		WriteChatColor(lMessage);
 	}
+
 	static void MikuEcho(char aColor, std::string aMessage, int aTarget) {
 		MikuEcho(aColor, aMessage, std::to_string(aTarget));
 	}
@@ -137,14 +138,6 @@ public:
 		EzCommand(lCommand);
 
 		delete lCommand;
-	}
-
-	static void MikuCommand(std::string aMessage) {
-		char lMessage[MAX_STRING];
-		std::string lEchoName = "[Miku]";
-
-		sprintf_s(lMessage, aMessage.c_str());
-		EzCommand(lMessage);
 	}
 
 	static long ActiveDiscipline() {

@@ -1,8 +1,5 @@
 #pragma once
 #include "DbConnection.h"
-#include <string>
-#include "DbManager.h"
-#include "SettingsContext.h"
 
 class StoredObject {
 private:  

@@ -1,7 +1,7 @@
-#ifndef H_SpellAbility
-#define H_SpellAbility
+#pragma once
 #include "Ability.h"
 #include "SpellUtils.h"
+#include "DbSpell.h"
 
 class SpellAbility : public Ability
 {
@@ -10,12 +10,39 @@ private:
 public:
 	static const char* ConfigKey;
 
+	SpellAbility() {}
+
+	SpellAbility(DbSpell * aDbSpell) {
+		_Spell = SpellUtils::GetSpellInBookByRawData(
+			aDbSpell->GetSPA1(),
+			aDbSpell->GetSPA2(),
+			aDbSpell->GetSPA3(),
+			aDbSpell->GetTarget(),
+			aDbSpell->GetTimer(),
+			aDbSpell->GetHasRecourse()
+		);
+		SetKey(aDbSpell->GetSpellKey());
+		SetName(aDbSpell->GetSpellKey());
+
+		_IsBuff = aDbSpell->GetIsBuff();
+
+		if (_Spell) {
+			LoadTriggerSpells();
+		}
+	}
+
+	virtual bool IsLoaded() override {
+		return _Spell;
+	}
+
 	MatchType DefaultMatchType() {
 		return MatchType::PARTIALMATCH;
 	}
 
 	bool AbilityFound() {
-		_Spell = SpellUtils::GetSpellFromSpellBook(GetKey(), _MatchType, _LevelMod);
+		if (!_Spell) {
+			_Spell = SpellUtils::GetSpellFromSpellBook(GetKey().c_str(), _MatchType, _LevelMod);
+		}
 
 		return _Spell;
 	}
@@ -32,6 +59,10 @@ public:
 	}
 
 	bool AbilityReady() {
+		if (!_Spell) {
+			return false;
+		}
+
 		if (!pCastSpellWnd) return false;
 		PcProfile * lPlayer = GetPcProfile();
 		long GemID = FindGemID(_Spell->ID);
@@ -51,8 +82,7 @@ public:
 		return Utils::GetClockTime() > _NextCastTime;
 	}
 
-	static bool GemReady(DWORD ID)
-	{
+	static bool GemReady(DWORD ID) {
 		return
 			(pCastSpellWnd && ID < NUM_SPELL_GEMS) &&
 			((long)((CCastSpellWnd*)pCastSpellWnd)->SpellSlots[ID]->spellicon != -1) &&
@@ -68,14 +98,7 @@ public:
 		int lGemID = FindGemID(_Spell->ID);
 
 		char lCommand[MAX_STRING];
-		/*
-		if (GetPcProfile()->Class != Bard) {
-			sprintf_s(lCommand, "/casting  \"%s\"|%d -maxtries|5", _Spell->Name, lGemID + 1);
-		}
-		else {
-			sprintf_s(lCommand, "/cast %d", lGemID + 1);
-		}
-		*/
+
 		sprintf_s(lCommand, "/cast %d", lGemID + 1);
 		EzCommand(lCommand);
 		_NextCastTime = Utils::GetClockTime() + _Spell->RecastTime;
@@ -86,7 +109,8 @@ public:
 	}
 
 	virtual void EchoLoadSuccessMessage() {
-		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded Spell: ", _Spell->Name);
+		std::string lMessage = "Level: " + std::to_string(_Spell->ClassLevel[GetPcProfile()->Class]) + " | Key: " + GetKey() + " | Name: " + _Spell->Name;
+		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded Spell: ", lMessage);
 	}
 
 	virtual std::string GetType() {
@@ -94,4 +118,3 @@ public:
 	}
 };
 const char* SpellAbility::ConfigKey = "spell";
-#endif

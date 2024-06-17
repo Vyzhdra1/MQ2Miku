@@ -12,6 +12,8 @@ private:
 	int _CharacterId = -1;
 	std::string _Name = "";
 	int _Level = -1;
+	int _CurrentExp = -1;
+	int _AACount = -1;
 	std::string _Server = "";
 	std::string _ClassKey = "";
 	std::string _AccountName = "";
@@ -32,6 +34,9 @@ public:
 		_ClassKey = aCharacterClass;
 		_AccountName = aAccountName;
 
+		_AACount = -1;
+		_CurrentExp = -1;
+
 		_Status = StoredStatus::INSERTED;
 	}
 
@@ -48,8 +53,20 @@ public:
 		_ClassKey = aRow.GetValue("ClassKey").AsString();
 		_AccountName = aRow.GetValue("AccountName").AsString();
 		_DefaultRole = aRow.GetValue("DefaultRole").AsString();
+		_CurrentExp = aRow.GetValue("CurrentExp").AsInt();
+		_AACount = aRow.GetValue("AACount").AsInt();
 		_IsValid = aRow.GetValue("IsValid").AsString().compare("Y") == 0;
 		_IsLoaded = true;
+		_Status = StoredStatus::NOCHANGE;
+	}
+
+	void UpdateLatestData(
+		int aLevel,
+		int aCurrentExp,
+		int aAACount) {
+		_Level = aLevel;
+		_CurrentExp = aCurrentExp;
+		_AACount = aAACount;
 	}
 
 	const int GetCharacterID() {
@@ -62,8 +79,8 @@ public:
 
 	std::string GetInsertSql() override {
 		return
-			"	INSERT INTO Character (Name, Level, Server, ClassKey, AccountName, IsValid) \
-				VALUES (?, ?, ?, ?, ?, ?) ";
+			"	INSERT INTO Character (Name, Level, Server, ClassKey, AccountName, CurrentExp, AACount, IsValid) \
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
 	}
 
 	std::string GetUpdateSql() override {
@@ -71,7 +88,9 @@ public:
 			"	UPDATE Character \
 			 	SET \
 					Level = ?, \
-					ClassKey = ? \
+					ClassKey = ?,\
+					CurrentExp = ?, \
+					AACount = ? \
 				WHERE \
 					CharacterID = ? ";
 	}
@@ -84,6 +103,8 @@ public:
 			 		Character.ClassKey, \
 			 		Character.Server, \
 			 		Character.Level, \
+			 		Character.CurrentExp, \
+			 		Character.AACount, \
 			 		Character.IsValid, \
 			 		Character.AccountName, \
 					CharacterClass.DefaultRole \
@@ -104,6 +125,8 @@ public:
 		lResult.push_back(new StringParameter(_Server));
 		lResult.push_back(new StringParameter(_ClassKey));
 		lResult.push_back(new StringParameter(_AccountName));
+		lResult.push_back(new IntParameter(_CurrentExp));
+		lResult.push_back(new IntParameter(_AACount));
 		lResult.push_back(new StringParameter("Y"));
 
 		return lResult;
@@ -113,6 +136,9 @@ public:
 		std::vector<ParameterBase*> lResult;
 		lResult.push_back(new IntParameter(_Level));
 		lResult.push_back(new StringParameter(_ClassKey));
+		lResult.push_back(new IntParameter(_CurrentExp));
+		lResult.push_back(new IntParameter(_AACount));
+
 		lResult.push_back(new IntParameter(_CharacterId));
 
 		return lResult;

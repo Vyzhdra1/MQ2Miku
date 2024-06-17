@@ -1,26 +1,65 @@
-#ifndef H_AAAbility
-#define H_AAAbility
+#pragma once
 #include "Ability.h"
+#include "DbAlternateAbilities.h"
 
 class AAAbility: public Ability
 {
 private:
-	PALTABILITY _Ability;
-	int _CastTime;
+	PALTABILITY _Ability = 0;
+	int _CastTime = 0;
+	int _ActCode = -1;
 public:
 	static const char* ConfigKey;
+
+	AAAbility() {}
+
+	AAAbility(DbAlternateAbilities* aDbAlternateAbilities) {
+		SetKey(std::to_string(aDbAlternateAbilities->GetActCode()));
+		SetName(aDbAlternateAbilities->GetAAKey());
+
+		_IsBuff = aDbAlternateAbilities->GetIsBuff();
+
+		_ActCode = aDbAlternateAbilities->GetActCode();
+		_Ability = FindAbility();
+
+		if (_Ability) {
+			_Spell = GetSpellByID(_Ability->SpellID);
+		}
+
+		if (_Spell) {
+			_CastTime = _Spell->CastTime;
+			LoadTriggerSpells();
+		}
+	}
+
+	virtual bool IsLoaded() override {
+		return _Ability;
+	}
+
+	PALTABILITY FindAbility() {
+		for (unsigned long nAbility = 0; nAbility < AA_CHAR_MAX_REAL; nAbility++) {
+			PALTABILITY lAbility = pAltAdvManager->GetAAById(pPCData->GetAlternateAbilityId(nAbility));
+
+			if (!lAbility || (lAbility->ID != _ActCode)) continue;
+
+			return lAbility;
+		}
+
+		return 0;
+	}
+
+
 
 	MatchType DefaultMatchType() {
 		return MatchType::IDMATCH;
 	}
 
 	bool AbilityFound() {
-		int lID = std::stoi(GetKey());
-		_CastTime = 0;
+		int _ActCode = std::stoi(GetKey());
 
 		for (unsigned long nAbility = 0; nAbility<AA_CHAR_MAX_REAL; nAbility++) {
 			if (PALTABILITY lAbility = pAltAdvManager->GetAAById(pPCData->GetAlternateAbilityId(nAbility))) {
-				if (lAbility->ID == lID) {
+				if (lAbility->ID == _ActCode) {
 					_Ability = lAbility;
 					_Spell = GetSpellByID(_Ability->SpellID);
 
@@ -37,6 +76,10 @@ public:
 	}
 	
 	bool AbilityReady() {
+		if (!_Ability) {
+			return false;
+		}
+
 		int lResult = 0;
 		if (pAltAdvManager->GetCalculatedTimer(pPCData, _Ability) > 0)
 		{
@@ -52,7 +95,7 @@ public:
 	}
 
 	virtual void Refresh() {
-		AbilityFound();
+		_Ability = FindAbility();
 	}
 
 	bool CanCastSimultaneously() {
@@ -61,7 +104,7 @@ public:
 
 	void Cast() {
 		char lCommand[MAX_STRING];
-		sprintf_s(lCommand, "/alt act %s", GetKey());
+		sprintf_s(lCommand, "/alt act %d", _ActCode);
 		EzCommand(lCommand);
 	}
 
@@ -70,7 +113,8 @@ public:
 	}
 
 	virtual void EchoLoadSuccessMessage() {
-		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded AA: ", _Spell->Name);
+		std::string lMessage = "<Key: " + GetKey() + "> <Name: " + _Ability->GetNameString() + "> ";
+		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded AA Ability: ", lMessage);
 	}
 
 	virtual std::string GetType() {
@@ -78,4 +122,3 @@ public:
 	}
 };
 const char* AAAbility::ConfigKey = "aa";
-#endif

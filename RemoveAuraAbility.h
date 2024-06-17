@@ -10,6 +10,11 @@ private:
 public:
 	static const char* ConfigKey;
 
+
+	virtual bool IsLoaded() override {
+		return true;
+	}
+
 	bool AbilityFound() {
 		return true;
 	}
