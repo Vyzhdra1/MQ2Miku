@@ -57,7 +57,7 @@ protected:
 		_Role = DPS_STR;
 	}
 
-	void Pulse() {
+	void Pulse() override {
 		if (!(pCastingWnd && (CSidlScreenWnd*)pCastingWnd->dShow) && (pCharSpawn && ((PSPAWNINFO)pCharSpawn)->CastingData.SpellID != -1)) {
 			_StopSongIterationCount++;
 			if (_StopSongIterationCount > MAX_SONG_ITERATION_BEFORE_CANCEL) {

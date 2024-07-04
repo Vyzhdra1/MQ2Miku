@@ -5,7 +5,7 @@
 class DbUpdater
 {
 private:
-	const int SHORT_PULSE = 5000;
+	const int SHORT_PULSE = 50000;
 	const int LONG_PULSE = 1000 * 60 * 5;
 	unsigned long _NextShortPulse = 0;
 public:
@@ -38,7 +38,8 @@ public:
 		lCharacter->UpdateLatestData(
 			GetPcProfile()->Level,
 			GetPcProfile()->Exp,
-			GetPcProfile()->AAPointsAssigned[0]);
+			GetPcProfile()->AAPointsAssigned[0],
+			pZoneInfo->LongName);
 
 		lDbManager->Save(lCharacter);
 	}

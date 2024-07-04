@@ -107,6 +107,9 @@ public:
 		int aSPA1,
 		int aSPA2,
 		int aSPA3,
+		int aModLevel,
+		int aExpansionOffset,
+		std::string aPartialName,
 		int aTarget,
 		int aTimer,
 		bool aHasRecourse
@@ -117,7 +120,7 @@ public:
 
 			PSPELL lSpell = GetPlayerSpellById(pLocalPC->GetCombatAbility(lCombatAbility));
 
-			if (!IsSpellMatch(aSPA1, aSPA2, aSPA3, aTarget, aTimer, aHasRecourse, lSpell, lResult)) continue;
+			if (!IsSpellMatch(aSPA1, aSPA2, aSPA3, aModLevel, aExpansionOffset, aPartialName, aTarget, aTimer, aHasRecourse, lSpell, lResult)) continue;
 
 			lResult = lSpell;
 		}
@@ -129,6 +132,9 @@ public:
 		int aSPA1,
 		int aSPA2,
 		int aSPA3,
+		int aModLevel,
+		int aExpansionOffset,
+		std::string aPartialName,
 		int aTarget,
 		int aTimer,
 		bool aHasRecourse
@@ -139,7 +145,7 @@ public:
 
 			PSPELL lSpell = GetPlayerSpellById(GetPcProfile()->SpellBook[lSpellIndex]);
 
-			if (!IsSpellMatch(aSPA1, aSPA2, aSPA3, aTarget, aTimer, aHasRecourse, lSpell, lResult)) continue;
+			if (!IsSpellMatch(aSPA1, aSPA2, aSPA3, aModLevel, aExpansionOffset, aPartialName, aTarget, aTimer, aHasRecourse, lSpell, lResult)) continue;
 
 			lResult = lSpell;
 		}
@@ -151,6 +157,9 @@ public:
 		int aSPA1,
 		int aSPA2,
 		int aSPA3,
+		int aModLevel,
+		int aExpansionOffset,
+		std::string aPartialName,
 		int aTarget,
 		int aTimer,
 		bool aHasRecourse,
@@ -173,6 +182,19 @@ public:
 
 		if ((aSPA3 > -1) && !IsSPAEffect(aCurrentSpell, aSPA3)) {
 			return false;
+		}
+
+		if ((aModLevel > -1) && (aCurrentSpell->ClassLevel[GetPcProfile()->Class] % 5 != aModLevel)) {
+			return false;
+		}
+
+		if ((aExpansionOffset > 0) && (aCurrentSpell->ClassLevel[GetPcProfile()->Class] > (GetPcProfile()->Level - (aExpansionOffset * 5)))) {
+			return false;
+		}
+
+		if (!aPartialName.empty()) {
+			std::string lSpellName(aCurrentSpell->Name);
+			if (lSpellName.find(aPartialName) == std::string::npos) return false;
 		}
 
 		if (aCurrentSpell->ReuseTimerIndex != aTimer) {

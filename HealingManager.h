@@ -111,13 +111,13 @@ private:
 		int lTotalHealth = 0;
 		int lGroupMembers = 0;
 		for (PlayerTarget* lTarget : _Targets) {
-			if (!lTarget->IsGroupMember()) continue;
+			if (!lTarget->IsGroupMember() || !lTarget->GetHealthPerc()) continue;
 
 			lTotalHealth += lTarget->GetHealthPerc();
 			lGroupMembers++;
 		}
 
-		if (!lTotalHealth || lGroupMembers) return 100;
+		if (!lTotalHealth || !lGroupMembers) return 100;
 
 		return lTotalHealth / lGroupMembers;
 	}
@@ -143,8 +143,6 @@ private:
 				continue;
 			}
 
-			_OrderedHealth.push_back(lTarget);
-
 			if (lTarget->IsMainTank()) {
 				if (!GetGroupTank()) {
 					int lTankTargetID = lTarget->GetClient()->TargetOfTarget;
@@ -160,6 +158,10 @@ private:
 				}
 
 				continue;
+			}
+			else {
+				_OrderedHealth.push_back(lTarget);
+
 			}
 
 			if (!lTarget->IsGroupMember())

@@ -50,7 +50,9 @@ public:
 			lOverride->SetValue(aValue);
 		}
 
-		DbManager::Get()->Save(lOverride);
+		if (CanOverridePersist(aSetting)) {
+			DbManager::Get()->Save(lOverride);
+		}
 
 		Utils::MikuEcho(Utils::SUCCESS_COLOR, aSetting + " updated: ", aValue);
 	}
@@ -61,6 +63,11 @@ public:
 
 	bool HasSetting(std::string aSetting) {
 		return DbManager::Get()->GetSettingsContext()->HasSetting(aSetting);
+	}
+
+	bool CanOverridePersist(std::string aSetting) {
+		if (!HasSetting(aSetting)) return false;
+		return DbManager::Get()->GetSettingsContext()->GetSetting(aSetting)->CanOverridePersist();
 	}
 
 	std::string GetValue(std::string aKey) {

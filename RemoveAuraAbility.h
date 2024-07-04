@@ -39,10 +39,6 @@ public:
 	virtual void EchoLoadSuccessMessage() {
 		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded: ", "Remove Aura");
 	}
-
-	virtual std::string GetType() {
-		return RemoveAuraAbility::ConfigKey;
-	}
 };
 
 const char* RemoveAuraAbility::ConfigKey = "removeaura";

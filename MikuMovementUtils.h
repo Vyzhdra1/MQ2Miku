@@ -3,8 +3,10 @@
 
 class MikuMovementUtils {
 private:
-	inline static unsigned long _StoppedMovingTimer;
-	inline static unsigned long _StoppedTime;
+	inline static unsigned long _LastMoveTime = Utils::GetClockTime();
+	inline static unsigned long _LastSitTime = Utils::GetClockTime();
+	inline static long _TimeSinceLastMove = 0;
+	inline static long _TimeSinceLastSit = 0;
 	inline static int _X = 0;
 	inline static int _Y = 0;
 public:
@@ -12,13 +14,18 @@ public:
 		if (!GetCharInfo()) return;
 		if (!GetCharInfo()->pSpawn) return;
 
+		unsigned long lNow = Utils::GetClockTime();;
+
 		if (IsMoving() || Utils::IsCasting() || PlayerUtils::IsSticking()) {
-			_StoppedMovingTimer = Utils::GetClockTime();
-			_StoppedTime = 0;
+			_LastMoveTime = lNow;
 		}
-		else {
-			_StoppedTime = Utils::GetClockTime() - _StoppedMovingTimer;
+
+		if (!PlayerUtils::IsStanding()) {
+			_LastSitTime = lNow;
 		}
+
+		_TimeSinceLastMove = lNow - _LastMoveTime;
+		_TimeSinceLastSit = lNow - _LastSitTime;
 
 		_X = (int) GetCharInfo()->pSpawn->X;
 		_Y = (int) GetCharInfo()->pSpawn->Y;
@@ -31,8 +38,12 @@ public:
 		return _X != (int)GetCharInfo()->pSpawn->X || _Y != (int)GetCharInfo()->pSpawn->Y;
 	}
 
-	static long GetStoppedTime() {
-		return _StoppedTime;
+	static long GetTimeSinceLastMove() {
+		return _TimeSinceLastMove;
+	}
+
+	static long GetTimeSinceLastSit() {
+		return _TimeSinceLastSit;
 	}
 
 	static bool IsUserMoved() {

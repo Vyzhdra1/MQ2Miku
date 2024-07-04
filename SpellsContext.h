@@ -18,8 +18,10 @@ protected:
 			 		Spells.SpellKey, \
 			 		Spells.ClassKey, \
 			 		Spells.Description, \
-			 		Spells.LevelOffset, \
+			 		Spells.ExpansionOffset, \
 					Spells.ExactLevel, \
+					Spells.ModLevel, \
+					Spells.PartialName, \
 			 		Spells.SPA1, \
 			 		Spells.SPA2, \
 					Spells.SPA3, \

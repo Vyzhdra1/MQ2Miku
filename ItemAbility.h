@@ -43,19 +43,37 @@ public:
 		_ItemClient = 0;
 		_ItemDefinition = 0;
 		_Spell = 0;
+
 		FindItem(_ItemID, _AlternateItemID, _ItemSlot, _SPA, _RecastType, &_PrimarySlot, &_SecondarySlot);
+
+		InitItemDefinition();
+
+		if (!_ItemDefinition) return;
+
+		_Spell = GetSpellByID(_ItemDefinition->GetSpellData(ItemSpellType_Clicky)->SpellID);
+		_ItemID = _ItemDefinition->ItemNumber;
+	}
+
+	void InitItemDefinition() {
+		_ItemClient = 0;
+		_ItemDefinition = 0;
 
 		if (_PrimarySlot == -1) return;
 
 		_ItemClient = GetPcProfile()->GetInventorySlot(_PrimarySlot);
+
+
+		if (!_ItemClient) return;
+
 		_ItemDefinition = _ItemClient->GetItemDefinition();
 
 		if (_SecondarySlot != -1) {
 			_ItemClient = _ItemClient->GetChildItemContainer()->GetItem(_SecondarySlot);
-			_ItemDefinition = _ItemClient->GetItemDefinition();
-		}
 
-		_Spell = GetSpellByID(_ItemDefinition->GetSpellData(ItemSpellType_Clicky)->SpellID);
+			if (_ItemClient) {
+				_ItemDefinition = _ItemClient->GetItemDefinition();
+			}
+		}
 	}
 
 	bool IsItemMatch(
@@ -88,7 +106,6 @@ public:
 
 		return true;
 	}
-
 
 	bool GetItemMatch(
 		int aItemID,
@@ -159,79 +176,25 @@ public:
 	virtual bool IsLoaded() override {
 		return _IsSummoned || _ItemClient;
 	}
-	/*
-	bool GetItemNumberByPartialSpellName(PITEMINFO aInfo, unsigned long aSlot, unsigned long aContainerSlot = -1) {
-		DWORD lSpellID = aInfo->Clicky.SpellID;
 
-		PSPELL pSpell = GetSpellByID(lSpellID);
-		if (!(pSpell)) return false;
-
-		std::string lSpellName(pSpell->Name);
-		size_t lMatch = lSpellName.find(GetKey());
-		if (lMatch == std::string::npos) return false;
-
-		_Slot = aSlot;
-		_Container = aContainerSlot;
-		_Spell = pSpell;
-	//	Utils::MikuEcho('g', "Loaded Item: ", aInfo->Name);
-		return true;
-	}
-
-	bool GetItemInfo(PCONTENTS aContents, PCONTENTS &Item, PITEMINFO &aInfo) {
-		Item = aContents;
-		if (!aContents)  {
-			aInfo = 0;
-			return false;
-		}
-
-		aInfo = GetItemFromContents(Item);
-		return aInfo != 0;
-	}
-	*/
 	virtual void Refresh() {
 		ReloadItem();
 	}
 
+	bool ItemFound() {
+		return _ItemDefinition;
+	}
+
 	bool AbilityFound()  {
-	/*	_Slot = -1;
-		_Container = -1;
+		if (_ItemID) {
+			InitItemDefinition();
 
-		PCONTENTS lItemLvl1 = 0;
-		PITEMINFO lInfoLvl1 = 0;
-
-		PCONTENTS lItemLvl2 = 0;
-		PITEMINFO lInfoLvl2 = 0;
-
-		PcProfile* pChar2 = GetPcProfile();
-		for (unsigned short usSlot = 0; usSlot < NUM_INV_SLOTS; usSlot++) {
-
-			//pChar2->pInventoryArray->InventoryArray[usSlot]
-			if (!GetItemInfo(pChar2->GetInventorySlot(usSlot), lItemLvl1, lInfoLvl1)) continue;
-
-			if (lInfoLvl1->Type == ITEMTYPE_PACK && lItemLvl1->Contents.ContainedItems.pItems) {
-				for (unsigned long nItem = 0; nItem < lInfoLvl1->Slots; nItem++) {
-					if (!GetItemInfo(lItemLvl1->GetContent(nItem), lItemLvl2, lInfoLvl2)) continue;
-
-					if (GetItemNumberByPartialSpellName(lInfoLvl2, nItem, usSlot)) {
-						_Item = lItemLvl2;
-						return true;
-					}
-				}
-			}
-			else {
-				if (GetItemNumberByPartialSpellName(lInfoLvl1, usSlot)) {
-					_Item = lItemLvl1;
-					return true;
-				}
-			}
+			if (_ItemDefinition && (_ItemID == _ItemDefinition->ItemNumber)) return true;
 		}
 
-		if (!_Silent) {
-			Utils::MikuEcho('r', "Could not find item: ", GetKey());
-		}
-		return false;
-		*/
-		return true;
+		ReloadItem();
+
+		return _ItemDefinition;
 	}
 
 	bool Memorized() {
@@ -245,9 +208,7 @@ public:
 	}
 	
 	bool AbilityReady() {
-		if (_IsSummoned) {
-			ReloadItem();
-		}
+		AbilityFound();
 
 		if (!_ItemDefinition) return false;
 
@@ -256,7 +217,7 @@ public:
 
 	void Cast() {
 		char lCommand[MAX_STRING];
-		if (!_ItemClient->IsContainer())
+		if (_SecondarySlot == -1)
 			sprintf_s(lCommand, "/useitem %d", _PrimarySlot);
 		else
 			sprintf_s(lCommand, "/useitem %d %d", _PrimarySlot, _SecondarySlot);
@@ -269,17 +230,15 @@ public:
 
 	virtual void EchoLoadSuccessMessage() {
 		if (_ItemDefinition) {
-			std::string lMessage = "Key: " + GetKey() + " | Spell: " + _Spell->Name + " | Item: " + _ItemDefinition->Name;
+			std::string lMessage = 
+				"Key: " + GetKey() + " | Spell: " + _Spell->Name + " | Item: " + 
+				_ItemDefinition->Name + " | Primary: " + std::to_string(_PrimarySlot) + " | Secondary: " + std::to_string(_SecondarySlot);
 			Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded Item: ", lMessage);
 		}
 		else {
 			std::string lMessage = "Key: " + GetKey();
 			Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded TempItem: ", lMessage);
 		}
-	}
-
-	virtual std::string GetType() {
-		return ItemAbility::ConfigKey;
 	}
 };
 const char* ItemAbility::ConfigKey = "item";

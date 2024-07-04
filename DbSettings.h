@@ -36,6 +36,7 @@ class DbSettings: public StoredObject {
 private:
 	std::string _Name = "";
 	bool _AsString = true;
+	bool _CanOverridePersist = true;
 	std::string _Value = "";
 	std::set<std::string> _ValidStringValues;
 	int _IntegerValue = -1;
@@ -59,6 +60,7 @@ public:
 		_Name = aRow.GetValue("Name").AsString();
 		_Value = aRow.GetValue("Value").AsString();
 		_AsString = !aRow.GetValue("ValueType").AsString().compare("S");
+		_CanOverridePersist = aRow.GetValue("CanOverridePersist").AsBool();
 
 		if (_AsString) {
 			InitValidStringValues(aRow.GetValue("ValidStrings").AsString());
@@ -103,5 +105,9 @@ public:
 
 	std::string GetName() {
 		return _Name;
+	}
+
+	bool CanOverridePersist() {
+		return _CanOverridePersist;
 	}
 };

@@ -17,6 +17,9 @@ public:
 			aDbSpell->GetSPA1(),
 			aDbSpell->GetSPA2(),
 			aDbSpell->GetSPA3(),
+			aDbSpell->GetModLevel(),
+			aDbSpell->GetExpansionOffset(),
+			aDbSpell->GetPartialName(),
 			aDbSpell->GetTarget(),
 			aDbSpell->GetTimer(),
 			aDbSpell->GetHasRecourse()
@@ -94,6 +97,12 @@ public:
 		return lGemID != -1;
 	}
 
+	void Memorize(int aGemSlot) {
+		char lCommand[MAX_STRING];
+		sprintf_s(lCommand, "/memspellslot %d %d", aGemSlot, _Spell->ID);
+		EzCommand(lCommand);
+	}
+
 	void Cast() {
 		int lGemID = FindGemID(_Spell->ID);
 
@@ -111,10 +120,6 @@ public:
 	virtual void EchoLoadSuccessMessage() {
 		std::string lMessage = "Level: " + std::to_string(_Spell->ClassLevel[GetPcProfile()->Class]) + " | Key: " + GetKey() + " | Name: " + _Spell->Name;
 		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded Spell: ", lMessage);
-	}
-
-	virtual std::string GetType() {
-		return SpellAbility::ConfigKey;
 	}
 };
 const char* SpellAbility::ConfigKey = "spell";

@@ -67,6 +67,9 @@ public:
 		return true;
 	}
 
+	virtual void Refresh() {}
+	virtual void Memorize(int aGemSlot) {}
+
 	PSPELL GetSpell() {
 		return _Spell;
 	}
@@ -80,7 +83,7 @@ public:
 	}
 
 	void SetKey(std::string aKey) {
-		_Key = aKey;
+		_Key = std::string(aKey);
 	}
 
 	const std::string GetKey() {
@@ -107,8 +110,6 @@ public:
 		return false;
 	}
 
-	virtual void Refresh() {}
-
 	virtual bool CanCast() {
 		return AbilityReady();
 	}
@@ -126,8 +127,6 @@ public:
 	}
 
 	virtual void EchoLoadSuccessMessage() = 0;
-
-	virtual std::string GetType() = 0;
 };
 
 #endif

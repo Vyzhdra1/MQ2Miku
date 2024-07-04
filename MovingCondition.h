@@ -15,7 +15,7 @@ public:
 	}
 
 	bool ConditionMet(Ability* aAbility) {
-		return (MikuMovementUtils::IsMoving() == _BooleanCondition) && (MikuMovementUtils::GetStoppedTime() > _IntegerValue);
+		return (MikuMovementUtils::IsMoving() == _BooleanCondition) && (MikuMovementUtils::GetTimeSinceLastMove() > _IntegerValue);
 	}
 
 	virtual void ParseNextValue(std::string aValue) override {

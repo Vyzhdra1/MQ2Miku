@@ -18,6 +18,7 @@ private:
 	std::string _ClassKey = "";
 	std::string _AccountName = "";
 	std::string _DefaultRole = "";
+	std::string _CurrentZone = "";
 	bool _IsValid = true;
 public:
 	DbCharacter() : StoredObject() { }
@@ -36,6 +37,7 @@ public:
 
 		_AACount = -1;
 		_CurrentExp = -1;
+		_CurrentZone = "";
 
 		_Status = StoredStatus::INSERTED;
 	}
@@ -55,7 +57,8 @@ public:
 		_DefaultRole = aRow.GetValue("DefaultRole").AsString();
 		_CurrentExp = aRow.GetValue("CurrentExp").AsInt();
 		_AACount = aRow.GetValue("AACount").AsInt();
-		_IsValid = aRow.GetValue("IsValid").AsString().compare("Y") == 0;
+		_IsValid = aRow.GetValue("IsValid").AsBool();
+		_CurrentZone = aRow.GetValue("CurrentZone").AsString();
 		_IsLoaded = true;
 		_Status = StoredStatus::NOCHANGE;
 	}
@@ -63,10 +66,12 @@ public:
 	void UpdateLatestData(
 		int aLevel,
 		int aCurrentExp,
-		int aAACount) {
+		int aAACount,
+		std::string aCurrentZone) {
 		_Level = aLevel;
 		_CurrentExp = aCurrentExp;
 		_AACount = aAACount;
+		_CurrentZone = aCurrentZone;
 	}
 
 	const int GetCharacterID() {
@@ -90,7 +95,9 @@ public:
 					Level = ?, \
 					ClassKey = ?,\
 					CurrentExp = ?, \
-					AACount = ? \
+					AACount = ?, \
+					CurrentZone = ?, \
+					LastOnline = datetime() \
 				WHERE \
 					CharacterID = ? ";
 	}
@@ -138,6 +145,7 @@ public:
 		lResult.push_back(new StringParameter(_ClassKey));
 		lResult.push_back(new IntParameter(_CurrentExp));
 		lResult.push_back(new IntParameter(_AACount));
+		lResult.push_back(new StringParameter(_CurrentZone));
 
 		lResult.push_back(new IntParameter(_CharacterId));
 

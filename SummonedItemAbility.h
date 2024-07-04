@@ -26,10 +26,6 @@ public:
 	virtual void EchoLoadSuccessMessage() {
 		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded SummonedItem: ", GetKey());
 	}
-
-	virtual std::string GetType() {
-		return SummonedItemAbility::ConfigKey;
-	}
 };
 const char * SummonedItemAbility::ConfigKey = "summoned";
 #endif

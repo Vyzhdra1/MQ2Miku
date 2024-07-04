@@ -59,10 +59,6 @@ public:
 	virtual void EchoLoadSuccessMessage() {
 		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded Skill: ", GetName());
 	}
-
-	virtual std::string GetType() {
-		return SkillAbility::ConfigKey;
-	}
 };
 const char* SkillAbility::ConfigKey = "skill";
 #endif

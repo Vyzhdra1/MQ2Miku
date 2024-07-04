@@ -12,10 +12,12 @@ private:
 	std::string _SpellKey = "";
 	std::string _ClassKey = "";
 	std::string _Description = "";
+	std::string _PartialName = "";
 	int _Target = -1;
 	bool _IsCombatAbility = false;
 	bool _HasRecourse = false;
-	int _LevelOffset = -1;
+	int _ExpansionOffset = -1;
+	int _ModLevel = -1;
 	int _ExactLevel = -1;
 	int _Timer = -1;
 	int _SPA1 = -1;
@@ -41,8 +43,12 @@ public:
 		_Description = aRow.GetValue("Description").AsString();
 		_Target = aRow.GetValue("Target").AsInt();
 
-		_LevelOffset = aRow.GetValue("LevelOffset").AsInt();
+		_ExpansionOffset = aRow.GetValue("Expansion").AsInt();
 		_ExactLevel = aRow.GetValue("ExactLevel").AsInt();
+		_ModLevel = aRow.GetValue("ModLevel").AsInt();
+
+		_PartialName = aRow.GetValue("PartialName").AsString();
+
 		_SPA1 = aRow.GetValue("SPA1").AsInt();
 		_SPA2 = aRow.GetValue("SPA2").AsInt();
 		_SPA3 = aRow.GetValue("SPA3").AsInt();
@@ -81,12 +87,20 @@ public:
 		return _HasRecourse;
 	}
 
-	int GetLevelOffset() {
-		return _LevelOffset;
+	int GetExpansionOffset() {
+		return _ExpansionOffset;
+	}
+
+	int GetModLevel() {
+		return _ModLevel;
 	}
 
 	int GetExactLevel() {
 		return _ExactLevel;
+	}
+
+	std::string GetPartialName() {
+		return _PartialName;
 	}
 
 	int GetTimer() {

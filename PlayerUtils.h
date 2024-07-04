@@ -1,7 +1,7 @@
 #pragma once
 #include <mq/Plugin.h>
 
-enum SpawnType { UNKNOWN, SELF, TANK, GROUP, TARGET_OF_TANK, LOWEST_HP_GROUP, MYTARGET, DEAD_PLAYER };
+enum SpawnType { UNKNOWN, SELF, TANK, GROUP, TARGET_OF_TANK, LOWEST_HP_GROUP, MYTARGET, DEAD_PLAYER, ATTACK_TARGET };
 bool* StickProc;
 class PlayerUtils
 {

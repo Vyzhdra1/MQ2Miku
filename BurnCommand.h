@@ -23,7 +23,9 @@ public:
 			lCommander = Utils::StrToInt(aInput[CommandConsts::LEADER_KEY], 0);
 		}
 
-		aPlayer->InitiateBurn(GetCharInfo()->pSpawn, aInput[CommandConsts::TARGET_KEY], lCommander);
+		int aTarget = Utils::StrToInt(aInput[CommandConsts::TARGET_KEY], -1);
+
+		aPlayer->InitiateBurn(GetCharInfo()->pSpawn, aTarget, lCommander);
 
 		return true;
 	}

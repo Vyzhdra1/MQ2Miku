@@ -46,10 +46,6 @@ public:
 		std::string lMessage = "Key: " + GetName() + " | Command: " + GetKey();
 		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded Command: ", lMessage);
 	}
-
-	virtual std::string GetType() {
-		return CommandAbility::ConfigKey;
-	}
 };
 
 const char* CommandAbility::ConfigKey = "command";

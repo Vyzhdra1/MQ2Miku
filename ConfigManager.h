@@ -127,11 +127,7 @@ public:
 				continue;
 			}
 
-
 			if (!lAbility->AbilityFound()) {
-				if (lAbility->GetType().compare(SkillAbility::ConfigKey)) {
-					Utils::MikuEcho(Utils::FAIL_COLOR, "Failed to load Ability to Set: ", lID);
-				}
 				delete lAbility;
 				continue;
 			}

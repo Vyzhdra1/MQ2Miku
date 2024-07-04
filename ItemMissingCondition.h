@@ -1,5 +1,4 @@
-#ifndef H_ItemMissingCondition
-#define H_ItemMissingCondition
+#pragma once
 #include "Ability.h"
 #include "ItemAbility.h"
 #include "BooleanCondition.h"
@@ -18,7 +17,7 @@ public:
 	~ItemMissingCondition() {
 		if (!_ItemAbility) return;
 
-		delete _ItemAbility;
+		//delete _ItemAbility;
 	}
 
 	bool ConditionMet(Ability * aAbility) {
@@ -30,12 +29,17 @@ public:
 	virtual void ParseNextValue(std::string aValue) override {
 		if (_ItemAbility) delete _ItemAbility;
 
-		_ItemAbility = new ItemAbility();
-		_ItemAbility->SetKey(aValue);
-		_ItemAbility->Silence();
+		Ability* lAbility = AbilityManager::Get()->GetAbility(aValue);
+
+		if (!lAbility) return;
+		if (!dynamic_cast<ItemAbility*>(lAbility)) return;
+
+		_ItemAbility = (ItemAbility*)lAbility;
+
+		//_ItemAbility = new ItemAbility();
+		//_ItemAbility->SetKey(aValue);
+		//_ItemAbility->Silence();
 	}
 };
 
 const char * ItemMissingCondition::Key = "itemmissing";
-
-#endif

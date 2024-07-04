@@ -20,6 +20,7 @@ protected:
 			 		Settings.MinValue, \
 			 		Settings.MaxValue, \
 					Settings.ValueType, \
+					Settings.CanOverridePersist, \
 			 		Settings.ValidStrings \
 			 	FROM  \
 			 	    Settings \

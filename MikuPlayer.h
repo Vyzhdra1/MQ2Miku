@@ -5,6 +5,7 @@
 #include "StateManager.h"
 #include "ActionManager.h"
 #include "GameManager.h"
+#include "SpawnManager.h"
 #include <mq/Plugin.h>
 
 class MikuPlayer
@@ -21,6 +22,7 @@ protected:
 	bool _IsPetClass = false;
 	unsigned long _OOCTime = 0;
 	unsigned long _CombatTime = 0;
+	unsigned long _TargetID = 0;
 
 	std::string _Role = "";
 	bool _IsMelee = true;
@@ -71,7 +73,7 @@ public:
 		InitClass();
 	}
 
-	void InitiateBurn(PSPAWNINFO pChar, char* aTarget, int aCommander) {
+	void InitiateBurn(PSPAWNINFO pChar, int aTarget, int aCommander) {
 		_StateManager->InitiateBurn();
 		InitiateAttack(pChar, aTarget, aCommander);
 	}
@@ -97,8 +99,10 @@ public:
 		_ActionManager->ClearActiveAbilities();
 	}
 
-	void InitiateAttack(PSPAWNINFO pChar, char* aTarget, int aCommander) {
+	void InitiateAttack(PSPAWNINFO pChar, int aTarget, int aCommander) {
 		if (!PlayerUtils::CanExecuteAbility()) return;
+
+		SpawnManager::Get()->SetAttackTarget(aTarget);
 
 		Utils::MikuEcho(Utils::BLUE_COLOR, "Commencing attack!");
 		EzCommand("/stand");
@@ -114,6 +118,7 @@ public:
 	}
 
 	void InitiateBackOff() {
+		SpawnManager::Get()->SetAttackTarget(-1);
 		_StateManager->InitiateBackOff();
 	}
 
@@ -129,8 +134,7 @@ public:
 
 	void ProcessAutoAttack() {
 		if ((pEverQuestInfo->bAutoRangeAttack || pEverQuestInfo->bAutoAttack) && !_StateManager->IsStateActive(STATE_ATTACK) && _StateManager->IsStateActive(IN_COMBAT) && pTarget && _IsMelee) {
-			char* lTargetID = (char*) std::to_string(pTarget->SpawnID).c_str();
-			InitiateAttack(pControlledPlayer, lTargetID, pControlledPlayer->SpawnID);
+			InitiateAttack(pControlledPlayer, pTarget->SpawnID, pControlledPlayer->SpawnID);
 		}
 
 		if (!((pEverQuestInfo->bAutoRangeAttack || pEverQuestInfo->bAutoAttack) || !pTarget) && _StateManager->IsStateActive(STATE_ATTACK) && _IsMelee) {
@@ -138,7 +142,7 @@ public:
 		}
 	}
 
-	void Pulse() {
+	virtual void Pulse() {
 		ProcessAutoAttack();
 
 		_StateManager->ProcessStates();

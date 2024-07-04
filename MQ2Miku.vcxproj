@@ -109,6 +109,7 @@
     <ClInclude Include="BoolParameter.h" />
     <ClInclude Include="BroadcastCommand.h" />
     <ClInclude Include="BuffAbilities.h" />
+    <ClInclude Include="SpellBuffAction.h" />
     <ClInclude Include="BuffActiveCondition.h" />
     <ClInclude Include="BuffCondition.h" />
     <ClInclude Include="BuffExistsCondition.h" />
@@ -157,7 +158,6 @@
     <ClInclude Include="MeleeUtils.h" />
     <ClInclude Include="PlayerManager.h" />
     <ClInclude Include="Query.h" />
-    <ClInclude Include="RebuffCondition.h" />
     <ClInclude Include="SettingCondition.h" />
     <ClInclude Include="EncounterManager.h" />
     <ClInclude Include="EncounterStep.h" />
@@ -171,7 +171,6 @@
     <ClInclude Include="SettingsContext.h" />
     <ClInclude Include="SettingsOverrideContext.h" />
     <ClInclude Include="SpawnManager.h" />
-    <ClInclude Include="InRangeCondition.h" />
     <ClInclude Include="InvisibleCondition.h" />
     <ClInclude Include="ItemOnCursorCondition.h" />
     <ClInclude Include="MikuMovementUtils.h" />
@@ -210,6 +209,7 @@
     <ClInclude Include="StateManager.h" />
     <ClInclude Include="SummonedItemAbility.h" />
     <ClInclude Include="TimerCondition.h" />
+    <ClInclude Include="TimerManager.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="XTarRangeCondition.h" />

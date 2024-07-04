@@ -66,9 +66,5 @@ public:
 	virtual void EchoLoadSuccessMessage() {
 		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded: ", "Rogue Burn Disc");
 	}
-
-	virtual std::string GetType() {
-		return "Rogue";
-	}
 };
 #endif

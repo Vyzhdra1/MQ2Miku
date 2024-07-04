@@ -3,6 +3,8 @@
 
 class TargetAbility : public AbilityCollectionAbility
 {
+private:
+	int _TargetID = -1;
 public:
 	static const char* Key;
 

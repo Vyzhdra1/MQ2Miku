@@ -37,6 +37,7 @@ public:
 	}
 
 	PALTABILITY FindAbility() {
+		_ActCode = Utils::StrToInt(GetKey().c_str(), -1);
 		for (unsigned long nAbility = 0; nAbility < AA_CHAR_MAX_REAL; nAbility++) {
 			PALTABILITY lAbility = pAltAdvManager->GetAAById(pPCData->GetAlternateAbilityId(nAbility));
 
@@ -55,7 +56,7 @@ public:
 	}
 
 	bool AbilityFound() {
-		int _ActCode = std::stoi(GetKey());
+		_ActCode = std::stoi(GetKey());
 
 		for (unsigned long nAbility = 0; nAbility<AA_CHAR_MAX_REAL; nAbility++) {
 			if (PALTABILITY lAbility = pAltAdvManager->GetAAById(pPCData->GetAlternateAbilityId(nAbility))) {
