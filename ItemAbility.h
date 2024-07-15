@@ -18,6 +18,7 @@ private:
 	int _ItemSlot = -1;
 	int _RecastType = -1;
 	bool _IsSummoned = false;
+	int _StackCount = 0;
 public:
 	static const char* ConfigKey;
 
@@ -43,6 +44,7 @@ public:
 		_ItemClient = 0;
 		_ItemDefinition = 0;
 		_Spell = 0;
+		_StackCount = 0;
 
 		FindItem(_ItemID, _AlternateItemID, _ItemSlot, _SPA, _RecastType, &_PrimarySlot, &_SecondarySlot);
 
@@ -52,11 +54,13 @@ public:
 
 		_Spell = GetSpellByID(_ItemDefinition->GetSpellData(ItemSpellType_Clicky)->SpellID);
 		_ItemID = _ItemDefinition->ItemNumber;
+		_StackCount = _ItemClient->StackCount;
 	}
 
 	void InitItemDefinition() {
 		_ItemClient = 0;
 		_ItemDefinition = 0;
+		_StackCount = 0;
 
 		if (_PrimarySlot == -1) return;
 
@@ -74,6 +78,11 @@ public:
 				_ItemDefinition = _ItemClient->GetItemDefinition();
 			}
 		}
+
+		if (_ItemClient) {
+			_StackCount = _ItemClient->StackCount;
+		}
+		
 	}
 
 	bool IsItemMatch(
@@ -87,7 +96,7 @@ public:
 
 		if (!aInfo) return false;
 
-		if (aInfo->GetSpellData(ItemSpellType_Clicky)->SpellID <= 0) return false;
+		if (((aRecastType != -1) || (aSPA != -1)) && aInfo->GetSpellData(ItemSpellType_Clicky)->SpellID <= 0) return false;
 
 		if ((aItemSlot != -1) && (aPrimarySlot != aItemSlot))  return false;
 
@@ -181,6 +190,10 @@ public:
 		ReloadItem();
 	}
 
+	int GetStackCount() {
+		return _StackCount;
+	}
+
 	bool ItemFound() {
 		return _ItemDefinition;
 	}
@@ -216,6 +229,8 @@ public:
 	}
 
 	void Cast() {
+		if (!_Spell) return;
+
 		char lCommand[MAX_STRING];
 		if (_SecondarySlot == -1)
 			sprintf_s(lCommand, "/useitem %d", _PrimarySlot);
@@ -231,7 +246,7 @@ public:
 	virtual void EchoLoadSuccessMessage() {
 		if (_ItemDefinition) {
 			std::string lMessage = 
-				"Key: " + GetKey() + " | Spell: " + _Spell->Name + " | Item: " + 
+				"Key: " + GetKey() + " | Item: " +
 				_ItemDefinition->Name + " | Primary: " + std::to_string(_PrimarySlot) + " | Secondary: " + std::to_string(_SecondarySlot);
 			Utils::MikuEcho(Utils::SUCCESS_COLOR, "Loaded Item: ", lMessage);
 		}

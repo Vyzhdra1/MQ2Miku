@@ -8,8 +8,6 @@
 #include "DiscAbility.h"
 #include "SkillAbility.h"
 #include "RemoveAuraAbility.h"
-#include "KillRogueDiscBurnAction.h"
-#include "SummonedItemAbility.h"
 #include "CommandAbility.h"
 
 #include "Parser.h"
@@ -23,7 +21,10 @@
 #include "SequenceAbilities.h"
 #include "CastOnceSequence.h"
 #include "CastFirstAvailable.h"
-#include "TargetAbility.h"
+#include "TargetAction.h"
+#include "XTargetAction.h"
+#include "SpellBuffAction.h"
+#include "ScribeSetAction.h"
 
 class Factory
 {
@@ -48,13 +49,26 @@ public:
 		else if (!aEntry->GetType().compare(CastFirstAvailableAbility::Key)) {
 			lResult = new CastFirstAvailableAbility();
 		}
-		else if (!aEntry->GetType().compare(TargetAbility::Key)) {
-			lResult = new TargetAbility();
+		else if (!aEntry->GetType().compare(TargetAction::Key)) {
+			lResult = new TargetAction();
+		}
+		else if (!aEntry->GetType().compare(SpellBuffAction::Key)) {
+			lResult = new SpellBuffAction();
+		}
+		else if (!aEntry->GetType().compare(XTargetAction::Key)) {
+			lResult = new XTargetAction();
+		}
+		else if (!aEntry->GetType().compare(ScribeSetAction::Key)) {
+			lResult = new ScribeSetAction();
 		}
 
 		if (lResult) {
 			lResult->SetKey(aEntry->GetID());
 			lResult->SetSpawnType(aEntry->GetTarget());
+			lResult->SetTargetID(aEntry->GetTargetID());
+			lResult->SetAllowEmpty(aEntry->GetAllowEmpty());
+			lResult->SetCastCounter(aEntry->GetCastLimit()); 
+			lResult->SetRemoveTime(aEntry->GetTimer());
 			if (aEntry->IsForced()) {
 				lResult->ForcePermenentlyEnabled();
 			}
@@ -90,17 +104,11 @@ public:
 		else if (!aEntry->GetType().compare(AAAbility::ConfigKey)) {
 			lResult = new AAAbility();
 		}
-		else if (!aEntry->GetType().compare(SummonedItemAbility::ConfigKey)) {
-			lResult = new SummonedItemAbility();
-		}
 		else if (!aEntry->GetType().compare(RemoveAuraAbility::ConfigKey)) {
 			lResult = new RemoveAuraAbility();
 		}
 		else if (!aEntry->GetType().compare(CommandAbility::ConfigKey)) {
 			lResult = new CommandAbility();
-		}
-		else if (!aEntry->GetType().compare("startrogueburn")) {
-			lResult = new KillRogueDiscBurnAction();
 		}
 
 		if (!lResult) {

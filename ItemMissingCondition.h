@@ -7,6 +7,7 @@ class ItemMissingCondition : public BooleanCondition
 {	
 private:
 	ItemAbility* _ItemAbility = 0;
+	int _StackCount = 0;
 public:
 	static const char * Key;
 
@@ -23,10 +24,17 @@ public:
 	bool ConditionMet(Ability * aAbility) {
 		if (!_ItemAbility) return false;
 
-		return !_ItemAbility->AbilityFound() == _BooleanCondition;
+		return (!_ItemAbility->AbilityFound() || (_ItemAbility->GetStackCount() < _StackCount)) == _BooleanCondition;
 	}
 
 	virtual void ParseNextValue(std::string aValue) override {
+		int lStackValue = Utils::StrToInt(aValue.c_str(), 0);
+
+		if (lStackValue) {
+			_StackCount = lStackValue;
+			return;
+		}
+
 		if (_ItemAbility) delete _ItemAbility;
 
 		Ability* lAbility = AbilityManager::Get()->GetAbility(aValue);
@@ -35,10 +43,6 @@ public:
 		if (!dynamic_cast<ItemAbility*>(lAbility)) return;
 
 		_ItemAbility = (ItemAbility*)lAbility;
-
-		//_ItemAbility = new ItemAbility();
-		//_ItemAbility->SetKey(aValue);
-		//_ItemAbility->Silence();
 	}
 };
 

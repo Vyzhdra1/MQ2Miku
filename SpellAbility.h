@@ -57,7 +57,6 @@ public:
 				return GEM;
 			}
 		}
-		Utils::MikuEcho(Utils::FAIL_COLOR, "SPELL NOT MEMMED: ", _Spell->Name);
 		return -1;
 	}
 
@@ -93,7 +92,16 @@ public:
 	}
 
 	bool Memorized() {
+		return Memorized(false);
+	}
+
+	bool Memorized(bool aSilent) override {
+		if (!_Spell) return true;
+
 		long lGemID = FindGemID(_Spell->ID);
+		if (lGemID == -1 && !aSilent) {
+			Utils::MikuEcho(Utils::FAIL_COLOR, "SPELL NOT MEMMED: ", _Spell->Name);
+		}
 		return lGemID != -1;
 	}
 

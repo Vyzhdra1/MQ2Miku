@@ -36,6 +36,11 @@ private:
 		aDbManager->GetSettingsContext()->LoadObjects();
 	}
 
+	static void LoadSpellSets(DbManager* aDbManager) {
+		aDbManager->GetSpellSetContext()->SetParameters(pEverQuest->GetClassThreeLetterCode(GetPcProfile()->Class));
+		aDbManager->GetSpellSetContext()->LoadObjects();
+	}
+
 public:
 	static void Load() {
 		DbManager* lDbManager = DbManager::Get();
@@ -49,8 +54,11 @@ public:
 		}
 
 		LoadSettingsOverride(lDbManager, lCharacter);
+		LoadSpellSets(lDbManager);
 
 		lDbManager->GetGearContext()->SetParameters(lCharacter->GetCharacterID());
+		lDbManager->GetGroupContext()->LoadObjects();
+		lDbManager->GetGuildContext()->LoadObjects();
 
 		DbAbilityLoader::Load();
 	}

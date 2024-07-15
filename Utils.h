@@ -5,6 +5,8 @@
 
 class Utils
 {
+private:
+	inline static unsigned long CURRENT_TIME = (unsigned long) clock();
 public:
 	static const char WARNING_COLOR = 'y';
 	static const char FAIL_COLOR = 'r';
@@ -21,6 +23,10 @@ public:
 		catch (int x) {
 			return aDefault;
 		}
+	}
+
+	static void SeedClockTime() {
+		CURRENT_TIME = (unsigned long)clock();
 	}
 
 
@@ -146,7 +152,7 @@ public:
 	}
 
 	static unsigned long GetClockTime() {
-		return (unsigned long)clock();
+		return CURRENT_TIME;
 	}
 
 	static 	std::vector<std::string> GetParamList(char* aInput) {
@@ -169,6 +175,38 @@ public:
 			}
 		}
 
+		return lResult;
+	}
+
+	static 	std::vector<std::string> SplitString(std::string aInput, std::string aDelimiter) {
+		std::vector<std::string> lResult;
+
+		size_t lTokenPos = 0;
+		std::string lToken;
+		while ((lTokenPos = aInput.find(aDelimiter)) != std::string::npos) {
+			lToken = aInput.substr(0, lTokenPos);
+			lResult.push_back(lToken);
+			aInput.erase(0, lTokenPos + aDelimiter.length());
+		}
+		return lResult;
+	}
+
+	static 	std::map<std::string, std::string> ToKeyValuePair(std::string aInput, std::string aDelimiter) {
+		std::vector<std::string> lValues;
+		std::map<std::string, std::string> lResult;
+
+		size_t lTokenPos = 0;
+		std::string lToken;
+		while ((lTokenPos = aInput.find(aDelimiter)) != std::string::npos) {
+			lToken = aInput.substr(0, lTokenPos);
+			lValues.push_back(lToken);
+			aInput.erase(0, lTokenPos + aDelimiter.length());
+
+			if (lValues.size() == 2) {
+				lResult[lValues[0]] = lValues[1];
+				lValues.clear();
+			}
+		}
 		return lResult;
 	}
 };

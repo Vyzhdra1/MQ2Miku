@@ -16,7 +16,7 @@ public:
 
 		unsigned long lNow = Utils::GetClockTime();;
 
-		if (IsMoving() || Utils::IsCasting() || PlayerUtils::IsSticking()) {
+		if (IsMoving() ||  PlayerUtils::IsSticking()) {
 			_LastMoveTime = lNow;
 		}
 

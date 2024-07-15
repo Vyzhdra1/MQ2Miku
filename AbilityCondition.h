@@ -12,6 +12,8 @@ public:
 		Load(aSettings);
 	}
 
+	AbilityCondition() : BooleanCondition() {}
+
 	virtual void ParseNextValue(std::string aValue) override {
 		_Ability = AbilityManager::Get()->GetAbility(aValue);
 

@@ -1,5 +1,4 @@
 #pragma once
-#include "BuffMonitor.h"
 
 class BlockedSpellsManager {
 private:

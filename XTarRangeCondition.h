@@ -41,6 +41,8 @@ public:
 
 			if (!lTarget) continue;
 
+			if (lTarget->Type != SPAWN_NPC) continue;
+
 			int lNewDistance = (int) DistanceToSpawn(GetCharInfo()->pSpawn, lTarget);
 
 			if (lNewDistance < _IntegerValue) {

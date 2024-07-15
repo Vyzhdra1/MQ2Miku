@@ -10,7 +10,6 @@ protected:
 	DbConnection* _Connection = 0;
 
 	virtual std::string GetQueryString() = 0;
-	virtual std::vector<ParameterBase*> GetParams() = 0;
 	virtual void Clear() = 0;
 	virtual void LoadDbObjects(SqlResult aResult) = 0;
 public:
@@ -19,7 +18,12 @@ public:
 	}
 
 	~ContextBase() {
-		//Clear();
+
+	}
+
+	virtual std::vector<ParameterBase*> GetParams() {
+		std::vector<ParameterBase*> lResult;
+		return lResult;
 	}
 
 	void LoadObjects() {

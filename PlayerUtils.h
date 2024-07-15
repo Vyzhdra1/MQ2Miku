@@ -1,7 +1,7 @@
 #pragma once
 #include <mq/Plugin.h>
 
-enum SpawnType { UNKNOWN, SELF, TANK, GROUP, TARGET_OF_TANK, LOWEST_HP_GROUP, MYTARGET, DEAD_PLAYER, ATTACK_TARGET };
+enum SpawnType { UNKNOWN, SELF, TANK, GROUP, LOWEST_HP_GROUP, MYTARGET, DEAD_PLAYER, ATTACK_TARGET, MY_PET, XTARGET };
 bool* StickProc;
 class PlayerUtils
 {
@@ -16,6 +16,9 @@ public:
 	inline static std::string TANK_TAR_STR = "tanktar";
 	inline static std::string MY_TARGET_STR = "mytarget";
 	inline static std::string DEAD_STR = "deadplayer";
+	inline static std::string ATTACKTAR_STR = "attacktarget";
+	inline static std::string MY_PET_STR = "mypet";
+	inline static std::string XTARGET_STR = "xtar";
 
 	static SpawnType StringToSpawnType(std::string aValue) {
 		if (!SELF_STR.compare(aValue.c_str())) {
@@ -30,20 +33,26 @@ public:
 		else if (!LOWEST_STR.compare(aValue.c_str())) {
 			return SpawnType::LOWEST_HP_GROUP;
 		}
-		else if (!TANK_TAR_STR.compare(aValue.c_str())) {
-			return SpawnType::TARGET_OF_TANK;
-		}
 		else if (!MY_TARGET_STR.compare(aValue.c_str())) {
 			return SpawnType::MYTARGET;
 		}
 		else if (!DEAD_STR.compare(aValue.c_str())) {
 			return SpawnType::DEAD_PLAYER;
 		}
+		else if (!ATTACKTAR_STR.compare(aValue.c_str())) {
+			return SpawnType::ATTACK_TARGET;
+		}
+		else if (!MY_PET_STR.compare(aValue.c_str())) {
+			return SpawnType::MY_PET;
+		}
+		else if (!XTARGET_STR.compare(aValue.c_str())) {
+			return SpawnType::XTARGET;
+		}
 		return UNKNOWN;
 	}
 
 	static int ValuePerc(int64_t aMax, int64_t aCurrent) {
-		return (int) ((aMax != 0) && (aCurrent != 0) ? aCurrent * 100 / aMax : 0);
+		return aMax == 0 ? 0 : aCurrent * 100 / aMax;
 	}
 
 	static int HealthPerc() {

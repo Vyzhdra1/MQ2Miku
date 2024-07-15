@@ -3,13 +3,15 @@
 #include <set>
 #include "SettingManager.h"
 
-enum MikuState { STATE_ATTACK, IN_COMBAT, BACK_OFF, FOLLOW, BURN, LIGHT_BURN };
+enum MikuState { STATE_ATTACK = 0, IN_COMBAT, BACK_OFF, FOLLOW, BURN };
 
 class StateManager {
 private:
+	inline static StateManager* _Manager = 0;
 	std::set<MikuState> _State;
 	unsigned long _OOCTime = 0;
 	unsigned long _CombatTime = 0;
+	std::string STATE_NAMES[5]{ "ATTACK", "COMBAT", "BACK_OFF", "FOLLOW", "BURN"};
 public:
 	StateManager() {
 		ClearStates();
@@ -21,6 +23,20 @@ public:
 
 	void ClearStates() {
 		_State.clear();
+	}
+
+	std::set<MikuState> ActiveStates() {
+		return _State;
+	}
+
+	std::string ActiveStateNames() {
+		std::string lResult = "";
+
+		for (MikuState lState : _State) {
+			lResult += STATE_NAMES[lState] + " ";
+		}
+
+		return lResult;
 	}
 
 	bool IsStateActive(MikuState aState) {
@@ -126,6 +142,20 @@ public:
 	void FinaliseStateProcess() {
 		ProcessBackOffState();
 		ProcessFollowState();
+	}
+
+	static void Deinit() {
+		if (_Manager) {
+			delete _Manager;
+			_Manager = 0;
+		}
+	}
+
+	static StateManager* Get() {
+		if (!_Manager) {
+			_Manager = new StateManager();
+		}
+		return _Manager;
 	}
 };
 

@@ -266,12 +266,28 @@ public:
 		return 0;
 	}
 
+	static long HasPetBuff(PSPELL aSpell) {
+		for (int nBuff = 0; nBuff < pPetInfoWnd->GetMaxBuffs(); nBuff++) {
+			if (pPetInfoWnd->GetBuff(nBuff) == aSpell->ID) return true;
+
+			if (!pPetInfoWnd->GetBuff(nBuff)) continue;
+
+			PSPELL lBuffSpell = GetSpellByID(pPetInfoWnd->GetBuff(nBuff));
+
+			if (lBuffSpell->SpellGroup == aSpell->SpellGroup) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	static bool CanBuffLand(PSPELL aSpell) {
 		int lSlotIndex = -1;
 		EQ_Affect* lAffect = pLocalPC->FindAffectSlot(aSpell->ID, pLocalPlayer, &lSlotIndex, true, pLocalPC->GetLevel());
 		if (lAffect && lSlotIndex != -1)
 		{
-			if (GetSpellDuration(aSpell, pLocalPlayer->Level, false) >= 1 && lAffect->Duration < 1) {
+			int lDuration = GetSpellDuration(aSpell, pLocalPlayer->Level, false);
+			if (lAffect->Duration < 1) {
 				return true;
 			}
 			return false;

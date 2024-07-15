@@ -21,6 +21,13 @@ public:
 		_IsGroupMember = true;
 	}
 
+	void LoadFromSpawn(PlayerClient* aSelf, bool aIsTank, bool aIsGroupMember) {
+
+		_Character = GetSpawnByID(aSelf->SpawnID);
+		_IsTank = aIsTank;
+		_IsGroupMember = aIsGroupMember;
+	}
+
 	void LoadFromName(std::string aName, bool aIsTank) {
 		_Name = aName;
 		_Character = GetSpawnByName(aName.c_str());

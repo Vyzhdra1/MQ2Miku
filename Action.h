@@ -8,10 +8,12 @@
 
 class Action
 {
+private:
+	bool _OwnedByManager = false;
 protected:
 	Ability* _Ability = 0;
 	std::string _Key;
-
+	unsigned long _RemoveTime = 0;
 protected:
 	bool _CastSuccessful = false;
 	bool _IsCasting = false;
@@ -22,6 +24,14 @@ public:
 		for (std::vector<Condition*>::iterator lIterator = _Conditions.begin(); lIterator != _Conditions.end(); lIterator++) {
 			delete *lIterator;
 		}
+	}
+
+	void FlagOwnedByManager() {
+		_OwnedByManager = true;
+	}
+
+	bool GetOwnedByManager() {
+		return _OwnedByManager;
 	}
 
 	void Enable() {
@@ -42,6 +52,14 @@ public:
 
 	Ability * GetAbility() {
 		return _Ability;
+	}
+
+	void SetRemoveTime(int aOffset) {
+		_RemoveTime = Utils::GetClockTime() + aOffset;
+	}
+
+	bool IsPassedRemoveTime() {
+		return _RemoveTime < Utils::GetClockTime();
 	}
 
 	void SetAbility(Ability * aAbility) {

@@ -25,6 +25,7 @@
 #include "BuffExistsCondition.h"
 #include "AbilityReadyCondition.h"
 #include "BannedTargetCondition.h"
+#include "MezzedCondition.h"
 
 
 class ConditionFactory
@@ -108,6 +109,9 @@ public:
 			}
 			else if (!lCondtitionName.compare(BannedTargetCondition::Key)) {
 				aAbility->AddCondition(new BannedTargetCondition(lSettings));
+			}
+			else if (!lCondtitionName.compare(MezzedCondition::Key)) {
+				aAbility->AddCondition(new MezzedCondition(lSettings));
 			}
 			else {				
 				Utils::MikuEcho(Utils::FAIL_COLOR, "Unknown Condition: ", lCondtitionName);

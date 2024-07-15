@@ -16,7 +16,6 @@ public:
 
 		switch (aSpawnType) {
 		case TANK: return HealingManager::Get()->GetSpawn(aSpawnType);
-		case TARGET_OF_TANK: return HealingManager::Get()->GetSpawn(aSpawnType);
 		case LOWEST_HP_GROUP: return HealingManager::Get()->GetSpawn(aSpawnType);
 		case DEAD_PLAYER: return HealingManager::Get()->GetSpawn(aSpawnType);
 		case SELF: return GetCharInfo()->pSpawn;

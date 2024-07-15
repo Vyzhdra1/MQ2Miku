@@ -5,6 +5,7 @@
 #include "SettingManager.h"
 #include "StringListQuery.h"
 
+enum HealStrategy {GROUPTANK, RAIDTANK};
 class HealingManager
 {
 private:
@@ -13,13 +14,11 @@ private:
 	std::vector<std::string> _TankNames;
 
 	std::vector<PlayerTarget*> _Targets;
-	std::vector<PlayerTarget*> _OrderedHealth;
-	std::vector<PlayerTarget*> _GroupMembers;
-	std::vector<PlayerTarget*> _Tanks;
 
 	int _AverageGroupHealth;
-	PlayerClient* _TankTarget;
 	PlayerClient* _DeadPlayer;
+	PlayerClient* _Tank;
+	PlayerClient* _Lowest;
 
 	bool IsLoaded(PlayerTarget* aTarget) {
 		for (PlayerTarget* lTarget : _Targets) {
@@ -28,6 +27,15 @@ private:
 			}
 		}
 		return false;
+	}
+
+	void AddTarget(PlayerTarget* aTarget) {
+		if (!aTarget->IsLoaded() || IsLoaded(aTarget)) {
+			delete aTarget;
+			return;
+		}
+
+		_Targets.push_back(aTarget);
 	}
 
 	void LoadManualTarget(std::string aName) {
@@ -44,6 +52,30 @@ private:
 		_Targets.push_back(lTarget);
 	}
 
+	void LoadXTargets() {
+		ExtendedTargetList* lTargetList = GetCharInfo()->pExtendedTargetList;
+
+		if (!lTargetList) return;
+
+		int lCount = 0;
+
+		for (ExtendedTargetSlot* lIterator = lTargetList->begin(); lIterator != lTargetList->end(); lIterator++) {
+			if (!lIterator) continue;
+
+			if (!lIterator->SpawnID) continue;
+
+			PlayerClient* lSpawn = GetSpawnByID(lIterator->SpawnID);
+
+			if (!lSpawn) continue;
+
+			if (lSpawn->Type != SPAWN_PLAYER) continue;
+
+			PlayerTarget* lTarget = new PlayerTarget();
+			lTarget->LoadFromSpawn(lSpawn, true, false);
+			AddTarget(lTarget);
+		}
+	}
+
 	void LoadTargets() {
 		DestroyTargets();
 
@@ -52,24 +84,14 @@ private:
 			{
 				PlayerTarget* lTarget = new PlayerTarget();
 				lTarget->LoadFromGroup(*lIterator);
-
-				if (!lTarget->IsLoaded())
-				{
-					delete lTarget;
-					continue;
-				}
-
-				_Targets.push_back(lTarget);
+				AddTarget(lTarget);
 			}
 		}
-
-		for (std::string lTank : _TankNames) {
-			LoadManualTarget(lTank);
+		else {
+			PlayerTarget* lTarget = new PlayerTarget();
+			lTarget->LoadFromSpawn(pLocalPlayer, false, true);
+			AddTarget(lTarget);
 		}
-	}
-
-	void InitTankListFromDB() {
-		_TankNames = StringListQuery::GetTankList();
 	}
 
 	void DestroyTargets() {
@@ -80,30 +102,23 @@ private:
 	}
 
 	void AssessCorpses() {
+		_DeadPlayer = 0;
+
 		if (PlayerUtils::InCombat()) return;
 
 		if (!PlayerUtils::IsRezer()) return;
 
-		if (!_DeadPlayer) return;
-
 		MQSpawnSearch ssSpawn;
 		ClearSearchSpawn(&ssSpawn);
-		ssSpawn.FRadius = 100;
 
-		for (PlayerTarget* lTarget : _Targets) {
-			MQSpawnSearch ssSpawn;
-			ClearSearchSpawn(&ssSpawn);
+		ssSpawn.FRadius = SettingManager::Get()->GetHealRange();
+		ssSpawn.SpawnType = PCCORPSE;
+		ssSpawn.GuildID = pLocalPC->GuildID;
 
-			ssSpawn.FRadius = 100;
-			ssSpawn.SpawnType = PCCORPSE;
-			strcpy_s(ssSpawn.szName, lTarget->GetClient()->Name);
+		PSPAWNINFO lCorpse = NthNearestSpawn(&ssSpawn, 1, pControlledPlayer);
 
-			PSPAWNINFO lCorpse = NthNearestSpawn(&ssSpawn, 1, pControlledPlayer);
-
-			if (lCorpse) {
-				_DeadPlayer = lCorpse;
-				return;
-			}
+		if (lCorpse) {
+			_DeadPlayer = lCorpse;
 		}
 	}
 
@@ -111,74 +126,22 @@ private:
 		int lTotalHealth = 0;
 		int lGroupMembers = 0;
 		for (PlayerTarget* lTarget : _Targets) {
-			if (!lTarget->IsGroupMember() || !lTarget->GetHealthPerc()) continue;
+			if (!lTarget->IsGroupMember() || !lTarget->GetHealthPerc() || lTarget->IsDead()) continue;
 
 			lTotalHealth += lTarget->GetHealthPerc();
 			lGroupMembers++;
 		}
 
-		if (!lTotalHealth || !lGroupMembers) return 100;
+		if (!lTotalHealth || (lGroupMembers < 3)) return 100;
 
 		return lTotalHealth / lGroupMembers;
-	}
-
-	void ResetProperties() {
-		_OrderedHealth.clear();
-		_Tanks.clear();
-
-		_TankTarget = 0;
-		_DeadPlayer = 0;
-	}
-
-	void HealingManager::AssessHealth() {
-		int lTotalGroupHealth = 0;
-
-		for (PlayerTarget* lTarget : _Targets) {
-			if (!lTarget->IsInRange(SettingManager::Get()->GetHealRange())) continue;
-
-			if (lTarget->IsDead()) {
-				if (lTarget->IsInRange(SettingManager::Get()->GetRezRange())) {
-					_DeadPlayer = lTarget->GetClient();
-				}
-				continue;
-			}
-
-			if (lTarget->IsMainTank()) {
-				if (!GetGroupTank()) {
-					int lTankTargetID = lTarget->GetClient()->TargetOfTarget;
-					if (lTankTargetID > 0) {
-						_TankTarget = GetSpawnByID(lTankTargetID);
-					}
-				}
-				if (lTarget->IsGroupMember()) {
-					_Tanks.insert(_Tanks.begin(), lTarget);
-				}
-				else {
-					_Tanks.push_back(lTarget);
-				}
-
-				continue;
-			}
-			else {
-				_OrderedHealth.push_back(lTarget);
-
-			}
-
-			if (!lTarget->IsGroupMember())
-			{
-				_GroupMembers.push_back(lTarget);
-			}
-		}
-		
-		std::sort(_OrderedHealth.begin(), _OrderedHealth.end());
 	}
 
 public:
 	PlayerClient* GetSpawn(SpawnType aSpawnType) {
 		switch (aSpawnType) {
-		case TANK: return GetTank();
-		case TARGET_OF_TANK: return _TankTarget;
-		case LOWEST_HP_GROUP: return GetLowestHP();
+		case TANK: return _Tank;
+		case LOWEST_HP_GROUP: return _Lowest;
 		case DEAD_PLAYER: return _DeadPlayer;
 		}
 
@@ -186,30 +149,24 @@ public:
 	}
 
 	PlayerClient* GetTank() {
-		if (_Tanks.empty()) return 0;
-			
-		return _Tanks.front()->GetClient();
-	}
-
-	void SetXTargets() {
-		int lIndex = 0;
-		for (std::string lTank : _TankNames) {
-			Utils::MikuSendCommand("/xtarget set " + std::to_string(lIndex) + " " + lTank);
-			lIndex++;
-		}
-	}
-
-	PlayerTarget* GetGroupTank() {
-		for (PlayerTarget* lTank : _Tanks) {
-			if (lTank->IsGroupMember()) return lTank;
+		for (PlayerTarget* lTarget : _Targets) {
+			if (lTarget->IsDead()) continue;
+			if (lTarget->IsGroupMember() && lTarget->IsMainTank()) {
+				return lTarget->GetClient();
+			}
 		}
 		return 0;
 	}
 
 	PlayerClient* GetLowestHP() {
-		if (_OrderedHealth.empty()) return 0;
+		PlayerTarget* lLowestHP = 0;
+		for (PlayerTarget* lTarget : _Targets) {
+			if (lTarget->IsDead()) continue;
+			if (!lLowestHP || (lLowestHP->GetHealthPerc() > lTarget->GetHealthPerc())) lLowestHP = lTarget;
+		}
 
-		return _OrderedHealth.front()->GetClient();
+		if (lLowestHP) return lLowestHP->GetClient();
+		return 0;
 	}
 
 	int GetRealGroupMemberCount() {
@@ -223,18 +180,41 @@ public:
 		return _AverageGroupHealth;
 	}
 
-	void HealingManager::Assess() {
-		ResetProperties();
+	int FindAvailableXTargetSlot() {
+		ExtendedTargetList* lTargetList = GetCharInfo()->pExtendedTargetList;
 
-		LoadTargets();
-		AssessHealth();
-		AssessCorpses();
+		if (!lTargetList) return -1;
 
-		_AverageGroupHealth = GetAverageGroupHp();
+		int lIndex = 0;
+		for (ExtendedTargetSlot* lIterator = lTargetList->begin(); lIterator != lTargetList->end(); lIterator++) {
+			if (!lIterator) return lIndex;
+
+			if (!lIterator->SpawnID) return lIndex;
+
+			PlayerClient* lSpawn = GetSpawnByID(lIterator->SpawnID);
+
+			if (!lSpawn) return lIndex;
+
+			if (lSpawn->Type != SPAWN_PLAYER) return lIndex;
+
+			lIndex++;
+		}
+		return -1;
 	}
 
 	void RegisterTarget(std::string aName) {
-		LoadManualTarget(aName);
+		int lAvailableSlot = FindAvailableXTargetSlot();
+		Utils::MikuEcho(Utils::SUCCESS_COLOR, "Registered watch: ", aName);
+		Utils::MikuSendCommand("/xtarget set " + std::to_string(lAvailableSlot) + " " + aName);
+	}
+
+	void HealingManager::Assess() {
+		LoadTargets();
+		AssessCorpses();
+
+		_AverageGroupHealth = GetAverageGroupHp();
+		_Tank = GetTank();
+		_Lowest = GetLowestHP();
 	}
 
 	static void Deinit() {

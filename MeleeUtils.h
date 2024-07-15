@@ -76,7 +76,7 @@ public:
 		//if (pAggroInfo && (pAggroInfo->aggroData[AD_Player].AggroPct >= 100))
 		
 		if (SettingManager::Get()->IsValueMatched(ROLE_STR, TANK_STR)) {
-			if ((SettingManager::Get()->GetInt(USER_DELAY_STR) < GetLastUserMovementElapsed()) && (!pAggroInfo || (pAggroInfo->aggroData[AD_Player].AggroPct < 100))) {
+			if ((SettingManager::Get()->GetInt(USER_DELAY_STR) < GetLastUserMovementElapsed()) && pAggroInfo && (pAggroInfo->aggroData[AD_Player].AggroPct < 100)) {
 				return MELEEMODE::MELEEMODE_MELEE;
 			}
 			else {
@@ -107,7 +107,7 @@ public:
 		if (MELEE_MODE == MELEEMODE::MELEEMODE_NONE) {
 			return;
 		}
-		float lMeleeRange = GetRangeOffset();
+		long lMeleeRange = GetRangeOffset();
 		std::string lCommand = fmt::format(GetStick(), std::to_string(lMeleeRange));
 
 		Utils::MikuEcho(Utils::BLUE_COLOR, "Stick Command: ", lCommand);

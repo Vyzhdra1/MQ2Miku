@@ -84,7 +84,7 @@
   <ItemGroup>
     <ClCompile Include="AlternateAbilitiesContext.h" />
     <ClCompile Include="DbConnection.h" />
-    <ClCompile Include="FollowBehaviour.cpp" />
+    <ClCompile Include="SpellSetContext.h" />
     <ClCompile Include="MQ2Miku.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -101,20 +101,28 @@
     <ClInclude Include="AssistCommand.h" />
     <ClInclude Include="AttackCommand.h" />
     <ClInclude Include="AuraCondition.h" />
+    <ClInclude Include="AutoAttackCondition.h" />
     <ClInclude Include="BackoffCommand.h" />
     <ClInclude Include="BannedTargetCondition.h" />
-    <ClInclude Include="Behaviour.h" />
     <ClInclude Include="BlockedSpellsManager.h" />
     <ClInclude Include="BooleanCondition.h" />
     <ClInclude Include="BoolParameter.h" />
     <ClInclude Include="BroadcastCommand.h" />
     <ClInclude Include="BuffAbilities.h" />
+    <ClInclude Include="DbGroup.h" />
+    <ClInclude Include="DbGuildMember.h" />
+    <ClInclude Include="DbSpellSetLink.h" />
+    <ClInclude Include="DemandActionManager.h" />
+    <ClInclude Include="GroupContext.h" />
+    <ClInclude Include="GuildContext.h" />
+    <ClInclude Include="GuildManager.h" />
+    <ClInclude Include="MezzedCondition.h" />
+    <ClInclude Include="MikuType.h" />
+    <ClInclude Include="ScribeSetAction.h" />
     <ClInclude Include="SpellBuffAction.h" />
     <ClInclude Include="BuffActiveCondition.h" />
     <ClInclude Include="BuffCondition.h" />
     <ClInclude Include="BuffExistsCondition.h" />
-    <ClInclude Include="BuffMonitor.h" />
-    <ClInclude Include="BuffMonitorManager.h" />
     <ClInclude Include="CharacterContext.h" />
     <ClInclude Include="CommandContext.h" />
     <ClInclude Include="ContextBase.h" />
@@ -166,7 +174,6 @@
     <ClInclude Include="Entry.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="FollowCommand.h" />
-    <ClInclude Include="GameManager.h" />
     <ClInclude Include="HasPetCondition.h" />
     <ClInclude Include="SettingsContext.h" />
     <ClInclude Include="SettingsOverrideContext.h" />
@@ -174,7 +181,6 @@
     <ClInclude Include="InvisibleCondition.h" />
     <ClInclude Include="ItemOnCursorCondition.h" />
     <ClInclude Include="MikuMovementUtils.h" />
-    <ClInclude Include="MissingBuff.h" />
     <ClInclude Include="MovingCondition.h" />
     <ClInclude Include="SettingManager.h" />
     <ClInclude Include="PlayerTarget.h" />
@@ -185,11 +191,10 @@
     <ClInclude Include="StoredObject.h" />
     <ClInclude Include="StringListQuery.h" />
     <ClInclude Include="StringParameter.h" />
-    <ClInclude Include="TargetAbility.h" />
+    <ClInclude Include="TargetAction.h" />
     <ClInclude Include="HealthCondition.h" />
     <ClInclude Include="ItemAbility.h" />
     <ClInclude Include="ItemMissingCondition.h" />
-    <ClInclude Include="KillRogueDiscBurnAction.h" />
     <ClInclude Include="MikuClass.h" />
     <ClInclude Include="MikuPlayer.h" />
     <ClInclude Include="ManaCondition.h" />
@@ -207,11 +212,11 @@
     <ClInclude Include="StandingCondition.h" />
     <ClInclude Include="StateCondition.h" />
     <ClInclude Include="StateManager.h" />
-    <ClInclude Include="SummonedItemAbility.h" />
     <ClInclude Include="TimerCondition.h" />
     <ClInclude Include="TimerManager.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="XTargetAction.h" />
     <ClInclude Include="XTarRangeCondition.h" />
   </ItemGroup>
   <ItemGroup>

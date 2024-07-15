@@ -24,7 +24,7 @@ public:
 	static std::map<std::string, char*> GetKeyValuePair(char * aInput) {
 		std::map<std::string, char*> lResult;
 
-		if (!strcmpi(aInput, "")) {
+		if (!strlen(aInput)) {
 			return lResult;
 		}
 

@@ -64,6 +64,10 @@ public:
 	}
 
 	virtual bool Memorized() {
+		return Memorized(false);
+	}
+
+	virtual bool Memorized(bool aSilent) {
 		return true;
 	}
 

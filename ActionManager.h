@@ -8,6 +8,8 @@
 
 class ActionManager {
 private:
+	inline static ActionManager* _Manager = 0;
+
 	std::map<std::string, AbilityCollectionAbility*> _AbilitySets;
 	std::vector<AbilityCollectionAbility*> _ActiveAbilities;
 
@@ -101,5 +103,19 @@ public:
 	AbilityCollectionAbility* GetAbilitySet(std::string aKey) {
 		if (_AbilitySets.find(aKey) == _AbilitySets.end()) return 0;
 		return _AbilitySets[aKey];
+	}
+
+	static void Deinit() {
+		if (_Manager) {
+			delete _Manager;
+			_Manager = 0;
+		}
+	}
+
+	static ActionManager* Get() {
+		if (!_Manager) {
+			_Manager = new ActionManager();
+		}
+		return _Manager;
 	}
 };

@@ -26,19 +26,19 @@ PLUGIN_VERSION(0.1);
 #include "BackoffCommand.h"
 #include "MikuMovementUtils.h"
 #include "SettingManager.h"
+#include "StateManager.h"
 #include "SpawnManager.h"
 #include "HealingManager.h"
 #include "BlockedSpellsManager.h"
+#include "GuildManager.h"
+#include "DemandActionManager.h"
 #include "MeleeUtils.h"
 #include "DbManager.h"
 #include "DbUpdater.h"
 
-//Setup stuff
 MikuPlayer * _Player = 0;
 DbUpdater* _DbUpdater = 0;
 
-//QBUFF
-unsigned long gLastUpdate = 0;
 unsigned long _NextUpdate = 0;
 
 //_______________________________________________________________________________________
@@ -52,7 +52,6 @@ void Init() {
 
 	StickProc = (bool*)GetPluginProc("mq2moveutils", "bStickOn");
 
-	GameManager::Init();
     long lClass = GetPcProfile()->Class;
 
     DebugSpew("Setting Class");
@@ -135,11 +134,13 @@ void DeInit() {
 		_DbUpdater = 0;
 	}
 
+	StateManager::Deinit();
 	SettingManager::Deinit();
 	SpawnManager::Deinit();
 	HealingManager::Deinit();
+	ActionManager::Deinit();
 	AbilityManager::Deinit();
-	GameManager::Deinit();
+	DemandActionManager::Deinit();
 	BlockedSpellsManager::Deinit();
 	DbManager::Deinit();
 }
@@ -261,17 +262,6 @@ PLUGIN_API void SetGameState(int GameState)
  */
 PLUGIN_API void OnPulse()
 {
-
-/*
-	static std::chrono::steady_clock::time_point PulseTimer = std::chrono::steady_clock::now();
-	// Run only after timer is up
-	if (std::chrono::steady_clock::now() > PulseTimer)
-	{
-		// Wait 5 seconds before running again
-		PulseTimer = std::chrono::steady_clock::now() + std::chrono::seconds(5);
-		DebugSpewAlways("MQ2Miku::OnPulse()");
-	}
-*/
     if (gGameState != GAMESTATE_INGAME || !_Player) return;
 
 	MeleeUtils::MonitorKeyPress();
@@ -280,15 +270,16 @@ PLUGIN_API void OnPulse()
 		_DbUpdater->OnPulse();
 	}
 
-	unsigned long lClockTime = Utils::GetClockTime();
+	Utils::SeedClockTime();
 
 	if (!_Player->IsBackOffInitiated()) {
-		if (lClockTime < _NextUpdate) return;
+		if (Utils::GetClockTime() < _NextUpdate) return;
 	}
 
-    _NextUpdate = lClockTime + SettingManager::Get()->GetUpdateDelay();
+    _NextUpdate = Utils::GetClockTime() + SettingManager::Get()->GetUpdateDelay();
 
 	SpawnManager::Get()->Assess();
+	DemandActionManager::Get()->ReevaluateActions();
 
     _Player->Pulse();
 
@@ -620,12 +611,19 @@ void MikuReport(PSPAWNINFO pChar, PCHAR szLine)
 	//_Player->Report();
 }
 
+void MikuRegister(PSPAWNINFO pChar, PCHAR szLine)
+{
+	DemandActionManager::Get()->ParseCommand(szLine);
+	//_Player->Report();
+}
+
 PLUGIN_API VOID OnEndZone(VOID)
 {
     if (!_Player) return;
 
 	AbilityManager::Get()->Refresh();
 
+	Utils::SeedClockTime();
 	_NextUpdate = Utils::GetClockTime() + (SettingManager::Get()->GetUpdateDelay() * 5);
 }
 
@@ -640,6 +638,7 @@ void MikuAction(PSPAWNINFO pChar, PCHAR szLine) {
 	std::string REPORT_STR = "report";
 	std::string REGISTER_STR = "register";
 	std::string LOADXTAR_STR = "loadxtar";
+	std::string INVITE_STR = "inv";
 
 	std::vector<std::string> lParams = Utils::GetParamList(szLine);
 
@@ -668,8 +667,8 @@ void MikuAction(PSPAWNINFO pChar, PCHAR szLine) {
 		HealingManager::Get()->RegisterTarget(lActionArgument);
 		return;
 	}
-	else if (!LOADXTAR_STR.compare(lAction)) {
-		HealingManager::Get()->SetXTargets();
+	else if (!INVITE_STR.compare(lAction)) {
+		GuildManager::Get()->Invite(lActionArgument);
 		return;
 	}
 	else {
@@ -693,6 +692,7 @@ PLUGIN_API VOID InitializePlugin(VOID)
     AddCommand("/mikuactivate", MikuActivate);
 	AddCommand("/mikureport", MikuReport);
 	AddCommand("/mikuset", MikuSet);
+	AddCommand("/mikuregister", MikuRegister);
 }
 
 // Called once, when the plugin is to shutdown
@@ -711,6 +711,7 @@ PLUGIN_API VOID ShutdownPlugin(VOID)
     RemoveCommand("/mikuactivate");
 	RemoveCommand("/mikureport");
 	RemoveCommand("/mikuset");
+	RemoveCommand("/mikuregister");
 
     DeInit();
 }

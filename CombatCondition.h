@@ -1,30 +1,21 @@
 #ifndef H_CombatConditon
 #define H_CombatConditon
-#include "Condition.h"
+#include "BooleanCondition.h"
 #include "PlayerUtils.h"
 
-class CombatCondition : public Condition
+class CombatCondition : public BooleanCondition
 {
 private:
 	bool _InCombat = false;
 public:
 	static const char * Key;
 
-	CombatCondition(std::set<std::string> aSettings) {
-		std::set<std::string>::iterator lIterator;
-		for (lIterator = aSettings.begin(); lIterator != aSettings.end(); lIterator++)
-		{
-			if (!strcmp("true", (*lIterator).c_str())) {
-				_InCombat = true;
-			}
-			else if (!strcmp("false", (*lIterator).c_str())) {
-				_InCombat = false;
-			}
-		}
+	CombatCondition(std::set<std::string> aSettings) : BooleanCondition(aSettings) {
+		Load(aSettings);
 	}
 
 	bool ConditionMet(Ability * aAbility) {
-		return  PlayerUtils::InCombat() == _InCombat;
+		return  PlayerUtils::InCombat() == _BooleanCondition;
 	}
 };
 

@@ -4,21 +4,12 @@
 #include "MeleeUtils.h"
 #include "StateManager.h"
 #include "ActionManager.h"
-#include "GameManager.h"
 #include "SpawnManager.h"
 #include <mq/Plugin.h>
 
 class MikuPlayer
 {
 protected:
-	std::string _ClassName;
-	int _Level;
-	std::string _Server;
-	std::string _Name;
-	std::string _AccountName;
-	StateManager* _StateManager;
-	ActionManager* _ActionManager;
-
 	bool _IsPetClass = false;
 	unsigned long _OOCTime = 0;
 	unsigned long _CombatTime = 0;
@@ -29,57 +20,19 @@ protected:
 
 	virtual void InitClass() = 0;
 public:
-	MikuPlayer() {
-		_ClassName = pEverQuest->GetClassThreeLetterCode(GetPcProfile()->Class);
-		_Level = GetPcProfile()->Level;
-		_Name = GetCharInfo()->Name;
-		_Server = GetServerShortName();
-		_AccountName = GetLoginName();
-
-		_ActionManager = new ActionManager();
-		_StateManager = GameManager::GetStateManager();
-	}
-
-	~MikuPlayer() {
-		delete _ActionManager;
-	}
-
-	std::string GetClassName() {
-		return _ClassName;
-	}
-
-	const int GetLevel() {
-		return _Level;
-	}
-
-	std::string GetServer() {
-		return _Server;
-	}
-
-	std::string GetName() {
-		return _Name;
-	}
-
-	std::string GetAccountName() {
-		return _AccountName;
-	}
-
-	ActionManager* GetActionManager() {
-		return _ActionManager;
-	}
+	MikuPlayer() {}
 
 	void Init() {
-
 		InitClass();
 	}
 
 	void InitiateBurn(PSPAWNINFO pChar, int aTarget, int aCommander) {
-		_StateManager->InitiateBurn();
+		StateManager::Get()->InitiateBurn();
 		InitiateAttack(pChar, aTarget, aCommander);
 	}
 
 	void BackOff() {
-		if (!_StateManager->IsStateActive(BACK_OFF)) {
+		if (!StateManager::Get()->IsStateActive(BACK_OFF)) {
 			return;
 		}
 
@@ -88,7 +41,7 @@ public:
 		if (_IsPetClass) {
 			EzCommand("/pet back");
 		}
-		if (!_StateManager->IsStateActive(FOLLOW)) {
+		if (!StateManager::Get()->IsStateActive(FOLLOW)) {
 			EzCommand("/stick off");
 		}
 		EzCommand("/stopsong");
@@ -96,7 +49,7 @@ public:
 		MeleeUtils::BackOff();
 		MeleeUtils::BackOff();
 
-		_ActionManager->ClearActiveAbilities();
+		ActionManager::Get()->ClearActiveAbilities();
 	}
 
 	void InitiateAttack(PSPAWNINFO pChar, int aTarget, int aCommander) {
@@ -110,34 +63,33 @@ public:
 		Utils::TargetByID(pChar, aTarget);
 
 		if (_IsMelee) {
-		//	EzCommand("/killthis");
-		//	EzCommand("/attack on");
 			MeleeUtils::InitiateAttack(aCommander);
 		}
-		_StateManager->InitiateAttack();
+		StateManager::Get()->InitiateAttack();
 	}
 
 	void InitiateBackOff() {
 		SpawnManager::Get()->SetAttackTarget(-1);
-		_StateManager->InitiateBackOff();
+		StateManager::Get()->InitiateBackOff();
 	}
 
 	bool IsBackOffInitiated() {
-		return _StateManager->IsBackOffInitiated();
+		return StateManager::Get()->IsBackOffInitiated();
 	}
 
 	void InitiateFollow(PSPAWNINFO pChar, char* aTarget) {
-		_StateManager->InitiateFollow();
+		StateManager::Get()->InitiateFollow();
 
 		Utils::TargetByID(pChar, aTarget);
 	}
 
 	void ProcessAutoAttack() {
-		if ((pEverQuestInfo->bAutoRangeAttack || pEverQuestInfo->bAutoAttack) && !_StateManager->IsStateActive(STATE_ATTACK) && _StateManager->IsStateActive(IN_COMBAT) && pTarget && _IsMelee) {
+		bool lIsFakeCombat = SettingManager::Get()->IsValueMatched(FAKE_COMBAT_STR, ON_STR);
+		if ((pEverQuestInfo->bAutoRangeAttack || pEverQuestInfo->bAutoAttack) && !StateManager::Get()->IsStateActive(STATE_ATTACK) && pTarget && ((StateManager::Get()->IsStateActive(IN_COMBAT) && _IsMelee) || lIsFakeCombat)) {
 			InitiateAttack(pControlledPlayer, pTarget->SpawnID, pControlledPlayer->SpawnID);
 		}
 
-		if (!((pEverQuestInfo->bAutoRangeAttack || pEverQuestInfo->bAutoAttack) || !pTarget) && _StateManager->IsStateActive(STATE_ATTACK) && _IsMelee) {
+		if (!((pEverQuestInfo->bAutoRangeAttack || pEverQuestInfo->bAutoAttack) || !pTarget) && StateManager::Get()->IsStateActive(STATE_ATTACK) && _IsMelee && !lIsFakeCombat) {
 			InitiateBackOff();
 		}
 	}
@@ -145,13 +97,13 @@ public:
 	virtual void Pulse() {
 		ProcessAutoAttack();
 
-		_StateManager->ProcessStates();
+		StateManager::Get()->ProcessStates();
 
 		BackOff();
 
-		_StateManager->FinaliseStateProcess();
+		StateManager::Get()->FinaliseStateProcess();
 
-		_ActionManager->ExecuteAbilities();
+		ActionManager::Get()->ExecuteAbilities();
 	}
 
 	void ParseChat(const char* Line, DWORD Color) {
@@ -175,18 +127,14 @@ public:
 	}
 
 	void Report() {
-		if (_StateManager->IsStateActive(MikuState::STATE_ATTACK)) {
+		if (StateManager::Get()->IsStateActive(MikuState::STATE_ATTACK)) {
 			Utils::MikuEcho(Utils::BLUE_COLOR, "I am in STATE_ATTACK");
 		}
-		if (_StateManager->IsStateActive(MikuState::IN_COMBAT)) {
+		if (StateManager::Get()->IsStateActive(MikuState::IN_COMBAT)) {
 			Utils::MikuEcho(Utils::BLUE_COLOR, "I am in IN_COMBAT");
 		}
-		if (_StateManager->IsStateActive(MikuState::BACK_OFF)) {
+		if (StateManager::Get()->IsStateActive(MikuState::BACK_OFF)) {
 			Utils::MikuEcho(Utils::BLUE_COLOR, "I am in BACK_OFF");
 		}
-	}
-
-	std::string GetRole() {
-		return _Role;
 	}
 };

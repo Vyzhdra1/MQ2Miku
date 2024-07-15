@@ -3,6 +3,7 @@
 #define H_StateCondition
 #include "Ability.h"
 #include "Condition.h"
+#include "StateManager.h"
 #include "BooleanCondition.h"
 #include "Utils.h"
 class StateCondition : public BooleanCondition
@@ -24,7 +25,7 @@ public:
 
 	bool ConditionMet(Ability* aAbility) {
 		for (std::set<MikuState>::iterator lIterator = _State.begin(); lIterator != _State.end(); lIterator++) {
-			if (GameManager::GetStateManager()->IsStateActive(*lIterator)) {
+			if (StateManager::Get()->IsStateActive(*lIterator)) {
 				return _BooleanCondition;
 			}
 		}

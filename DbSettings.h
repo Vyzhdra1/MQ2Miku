@@ -79,7 +79,7 @@ public:
 	}
 
 	bool ValidateString(std::string aValue) {
-		return _ValidStringValues.find(aValue) != _ValidStringValues.end();
+		return !_ValidStringValues.size() || (_ValidStringValues.find(aValue) != _ValidStringValues.end());
 	}
 
 	bool Validate(std::string aNewValue) {

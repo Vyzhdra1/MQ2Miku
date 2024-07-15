@@ -14,7 +14,7 @@ public:
 			return false;
 		}
 
-		aPlayer->GetActionManager()->ActivateAbility(aInput[CommandConsts::ABILITYSET_KEY]);
+		ActionManager::Get()->ActivateAbility(aInput[CommandConsts::ABILITYSET_KEY]);
 		return true;
 	}
 };

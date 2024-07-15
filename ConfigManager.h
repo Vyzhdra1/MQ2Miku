@@ -12,11 +12,11 @@ public:
 		LoadAbilities(aPlayer);
 		LoadSets(aPlayer);
 
-		aPlayer->GetActionManager()->ActivatePermanentlyEnabledSets();
+		ActionManager::Get()->ActivatePermanentlyEnabledSets();
 	}
 
 	void PointToClassFile(MikuPlayer* aPlayer) {
-		sprintf_s(INIFileName, "%s\\config\\MQ2Miku\\class\\Miku_%s.ini", gPathMQRoot, aPlayer->GetClassName().c_str());
+		sprintf_s(INIFileName, "%s\\config\\MQ2Miku\\class\\Miku_%s.ini", gPathMQRoot, pEverQuest->GetClassThreeLetterCode(GetPcProfile()->Class));
 	}
 
 	void PointToGeneralFile() {
@@ -48,9 +48,13 @@ public:
 
 		LoadAbilitiesToSet(aEntry->GetID(), aPlayer, lCollection);
 
-		if (lCollection->GetAbilityCollection().size() == 0) {
+		if (!lCollection->HasAbilities() && !lCollection->GetAllowEmpty()) {
+			Utils::MikuEcho(Utils::FAIL_COLOR, "Set is empty: ", aEntry->GetID());
 			delete lCollection;
 			lCollection = 0;
+		}
+		else {
+			aEntry->ClearType();
 		}
 
 		return lCollection;
@@ -61,10 +65,11 @@ public:
 
 		for (std::vector<Entry*>::iterator lEntry = lEntries.begin(); lEntry != lEntries.end(); lEntry++) {
 
-			AbilityCollectionAbility* lCollection = LoadSet(*lEntry, aPlayer);
+ 			AbilityCollectionAbility* lCollection = LoadSet(*lEntry, aPlayer);
 
 			if (lCollection) {
-				aPlayer->GetActionManager()->AddAbilitySet(lCollection->GetKey(), lCollection);
+				lCollection->FlagOwnedByManager();
+				ActionManager::Get()->AddAbilitySet(lCollection->GetKey(), lCollection);
 				Utils::MikuEcho(Utils::WARNING_COLOR, "Succefully Loaded Set: ", lCollection->GetKey());
 			}
 			else {
@@ -79,20 +84,42 @@ public:
 	}
 
 	void LoadAbilitiesToSet(std::string aHeader, MikuPlayer* aPlayer, AbilityCollectionAbility* aCollection) {
-		std::vector<Entry*> lEntries = LoadSetting(aHeader);
+		Action* lAction = 0;
+		Ability* lAbility = AbilityManager::Get()->GetAbility(aHeader);
 
+		//Load Single Ability to Ability collection as opposed to a set of abilities. Condition will be attached to parent collection action
+		if (lAbility) {
+			lAction = new Action();
+			lAction->SetAbility(lAbility);
+			aCollection->AddAbility(lAction);
+			return;
+		}
+
+		std::vector<Entry*> lEntries = LoadSetting(aHeader);
 		for (std::vector<Entry*>::iterator lEntry = lEntries.begin(); lEntry != lEntries.end(); lEntry++) {
+			lAction = 0;
+			bool lSupressConditions = false;
 			std::string lID = (*lEntry)->GetID();
 
-			Ability* lAbility = AbilityManager::Get()->GetAbility(lID);
-
-			Action* lAction;
-			if (lAbility) {
-				lAction = new Action();
-				lAction->SetAbility(lAbility);
+			if (!(*lEntry)->GetType().empty()) {
+				lAction = LoadSet(*lEntry, aPlayer);
+				lSupressConditions = true;
 			}
 			else {
-				lAction = LoadSet(*lEntry, aPlayer);
+				Ability* lAbility = AbilityManager::Get()->GetAbility(lID);
+
+				if (lAbility) {
+					lAction = new Action();
+					lAction->SetAbility(lAbility);
+				}
+
+				if (!lAction) {
+					lAction = ActionManager::Get()->GetAbilitySet(lID);
+				}
+
+				if (!lAction) {
+					lAction = LoadSet(*lEntry, aPlayer);
+				}
 			}
 
 			if (!lAction) {
@@ -103,7 +130,9 @@ public:
 
 			aCollection->AddAbility(lAction);
 
-			ConditionFactory::AddConditions(*lEntry, lAction);
+			if (!lSupressConditions) {
+				ConditionFactory::AddConditions(*lEntry, lAction);
+			}
 
 			delete* lEntry;
 		}

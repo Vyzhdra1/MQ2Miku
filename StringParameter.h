@@ -12,7 +12,7 @@ public:
 	}
 
 	virtual int Bind(sqlite3_stmt* lStatement, int aIndex) override {
-		return sqlite3_bind_text(lStatement, aIndex, _Value.c_str(), strlen(_Value.c_str()), NULL);
+		return sqlite3_bind_text(lStatement, aIndex, _Value.c_str(), _Value.size(), NULL);
 	}
 };
 

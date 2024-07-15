@@ -9,7 +9,8 @@
 class SpellBuffAction : public AbilityCollectionAbility
 {
 private:
-	int _TargetID = -1;
+	int _MemoriseOffset = 2000;
+	unsigned long _MemorizeTimer = Utils::GetClockTime();
 public:
 	static const char* Key;
 
@@ -27,23 +28,29 @@ public:
 			return false;
 		}
 
-		//PlayerClient* lSpawn = SpawnManager::Get()->GetSpawn(_SpawnType);
+		PlayerClient* lSpawn = GetSpawn();;
 
-		//if (!lSpawn) return false;
-
-		//Utils::MikuEcho(Utils::BLUE_COLOR, "Targeted: ", lSpawn->Name);
+		if (!lSpawn) return false;
 
 		for (std::vector<Action*>::iterator lIterator = _Abilities.begin(); lIterator != _Abilities.end(); lIterator++) {
 			if (!(*lIterator)->ConditionsMet()) continue;
 
-			if (!(*lIterator)->GetAbility()->Memorized()) return true;
+			if (!(*lIterator)->GetAbility()->Memorized(true)) {
+				if (Utils::GetClockTime() < _MemorizeTimer) return true;
 
+				(*lIterator)->GetAbility()->Memorize(13);
+				_MemorizeTimer = Utils::GetClockTime() + _MemoriseOffset;
+				return true;
+			}
+
+			Utils::MikuEcho(Utils::BLUE_COLOR, "Check Ability Ready: ", lSpawn->Name);
 			if (!(*lIterator)->AbilityReady()) return true;
 
+			Utils::MikuEcho(Utils::BLUE_COLOR, "Targeted: ", lSpawn->Name);
 			return CastSelectedAbility(*lIterator);
 		}
 		Reset();
 		return false;
 	}
 };
-const char* SpellBuffAction::Key = "onceoff";
+const char* SpellBuffAction::Key = "spellbuff";

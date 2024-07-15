@@ -86,8 +86,6 @@ public:
 		{
 			pAltAdvManager->IsAbilityReady(pPCData, _Ability, &lResult);
 		}
-		DebugSpew("Ability: %d", _Ability);
-		DebugSpew("Key: %s", GetKey());
 		return lResult <= 0;
 	}
 
