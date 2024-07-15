@@ -13,6 +13,7 @@
 #include "AlternateAbilitiesContext.h"
 #include "DbCharacter.h"
 #include "CommandContext.h"
+#include "SpellSetContext.h"
 
 enum DbContextType { 
 	SETTINGSCONTEXT, 
@@ -21,7 +22,8 @@ enum DbContextType {
 	GEARCONTEXT, 
 	ALTERNATEABILITIESCONTEXT,
 	COMMANDCONTEXT,
-	ITEMABILITYCONTEXT
+	ITEMABILITYCONTEXT,
+	SPELLSETCONTEXT
 };
 
 class DbManager
@@ -120,6 +122,13 @@ public:
 			_Contexts[ITEMABILITYCONTEXT] = new ItemAbilityContext(_Connection);
 		}
 		return (ItemAbilityContext*)_Contexts[ITEMABILITYCONTEXT];
+	}
+
+	SpellSetContext* GetSpellSetContext() {
+		if (!_Contexts.count(SPELLSETCONTEXT)) {
+			_Contexts[SPELLSETCONTEXT] = new SpellSetContext(_Connection);
+		}
+		return (SpellSetContext*)_Contexts[SPELLSETCONTEXT];
 	}
 	
 	static void Deinit() {

@@ -19,6 +19,8 @@ inline static std::string COMBAT_TIMER_STR = "combattimer";
 inline static std::string ASSIST_RANGE_STR = "assistrange";
 inline static std::string HEAL_RANGE_STR = "healrange";
 inline static std::string REZ_RANGE_STR = "rezrange";
+inline static std::string AUTOSCRIBE_STR = "autoscribe";
+inline static std::string SPELLSET_STR = "spellset";
 
 inline static std::string COMBAT_TIMER_ENABLED_STR = "combattimerenabled";
 inline static std::string FAKE_COMBAT_STR = "fakecombat";

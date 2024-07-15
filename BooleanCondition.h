@@ -27,6 +27,7 @@ protected:
 	}
 public:
 	BooleanCondition(std::set<std::string> aSettings) { }
+	BooleanCondition() { }
 
 	virtual void ParseNextValue(std::string aValue) {
 		Utils::MikuEcho(Utils::FAIL_COLOR, "Could not parse: ", aValue);

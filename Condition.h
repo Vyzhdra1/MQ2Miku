@@ -5,7 +5,6 @@
 
 class Condition
 {
-protected:
 public:
 	virtual bool ConditionMet(Ability * aAbility) = 0;
 
@@ -28,6 +27,12 @@ public:
 			}
 		}
 	}
+
+	virtual SpawnType GetSpawnType() {
+		return SpawnType::UNKNOWN;
+	}
+
+	virtual void SetXTargetID(int XTargetID) { }
 };
 
 #endif

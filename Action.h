@@ -8,6 +8,8 @@
 
 class Action
 {
+private:
+	bool _OwnedByManager = false;
 protected:
 	Ability* _Ability = 0;
 	std::string _Key;
@@ -22,6 +24,14 @@ public:
 		for (std::vector<Condition*>::iterator lIterator = _Conditions.begin(); lIterator != _Conditions.end(); lIterator++) {
 			delete *lIterator;
 		}
+	}
+
+	void FlagOwnedByManager() {
+		_OwnedByManager = true;
+	}
+
+	bool GetOwnedByManager() {
+		return _OwnedByManager;
 	}
 
 	void Enable() {

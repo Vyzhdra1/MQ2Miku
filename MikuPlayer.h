@@ -17,7 +17,6 @@ protected:
 	std::string _Name;
 	std::string _AccountName;
 	StateManager* _StateManager;
-	ActionManager* _ActionManager;
 
 	bool _IsPetClass = false;
 	unsigned long _OOCTime = 0;
@@ -36,12 +35,7 @@ public:
 		_Server = GetServerShortName();
 		_AccountName = GetLoginName();
 
-		_ActionManager = new ActionManager();
 		_StateManager = GameManager::GetStateManager();
-	}
-
-	~MikuPlayer() {
-		delete _ActionManager;
 	}
 
 	std::string GetClassName() {
@@ -62,10 +56,6 @@ public:
 
 	std::string GetAccountName() {
 		return _AccountName;
-	}
-
-	ActionManager* GetActionManager() {
-		return _ActionManager;
 	}
 
 	void Init() {
@@ -96,7 +86,7 @@ public:
 		MeleeUtils::BackOff();
 		MeleeUtils::BackOff();
 
-		_ActionManager->ClearActiveAbilities();
+		ActionManager::Get()->ClearActiveAbilities();
 	}
 
 	void InitiateAttack(PSPAWNINFO pChar, int aTarget, int aCommander) {
@@ -151,7 +141,7 @@ public:
 
 		_StateManager->FinaliseStateProcess();
 
-		_ActionManager->ExecuteAbilities();
+		ActionManager::Get()->ExecuteAbilities();
 	}
 
 	void ParseChat(const char* Line, DWORD Color) {

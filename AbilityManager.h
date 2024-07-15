@@ -3,6 +3,8 @@
 #include <string>
 #include "Ability.h"
 #include "SpellAbility.h"
+#include "AAAbility.h"
+#include "ItemAbility.h"
 #include "DiscAbility.h"
 
 class AbilityManager {
@@ -63,15 +65,41 @@ public:
 		}
 	}
 
-	void ReportAbilities() {
-		for (const auto& [lKey, lValue] : _Abilities) {
-			if (lValue->IsLoaded()) {
-				lValue->EchoLoadSuccessMessage();
-			}
-			else {
-				Utils::MikuEcho(Utils::FAIL_COLOR, "Failed to load: ", lKey);
-			}
+	void ReportAbilities(int aAbilityType) {
+		std::string lAbilityType = "";
+		switch (aAbilityType) {
+		case 0: lAbilityType = "Spell";
+			break;
+		case 1: lAbilityType = "Disc";
+			break;
+		case 2: lAbilityType = "Item";
+			break;
+		case 3: lAbilityType = "AA";
+			break;
 		}
+
+		Utils::MikuEcho(Utils::MAGENTA_COLOR, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ", lAbilityType);
+
+
+		for (const auto& [lKey, lValue] : _Abilities) {
+			if ((aAbilityType == 0) && !dynamic_cast<SpellAbility*>(lValue)) continue;
+			if ((aAbilityType == 1) && !dynamic_cast<DiscAbility*>(lValue)) continue;
+			if ((aAbilityType == 2) && !dynamic_cast<ItemAbility*>(lValue)) continue;
+			if ((aAbilityType == 3) && !dynamic_cast<AAAbility*>(lValue)) continue;
+					
+			if (!lValue->IsLoaded()) {
+				Utils::MikuEcho(Utils::FAIL_COLOR, "Failed to load: ", lKey);
+				continue;
+			}
+			lValue->EchoLoadSuccessMessage();
+		}
+	}
+
+	void ReportAbilities() {
+		ReportAbilities(0);
+		ReportAbilities(1);
+		ReportAbilities(2);
+		ReportAbilities(3);
 	}
 
 	static void Deinit() {

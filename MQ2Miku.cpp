@@ -29,9 +29,11 @@ PLUGIN_VERSION(0.1);
 #include "SpawnManager.h"
 #include "HealingManager.h"
 #include "BlockedSpellsManager.h"
+#include "DemandActionManager.h"
 #include "MeleeUtils.h"
 #include "DbManager.h"
 #include "DbUpdater.h"
+
 
 //Setup stuff
 MikuPlayer * _Player = 0;
@@ -138,7 +140,9 @@ void DeInit() {
 	SettingManager::Deinit();
 	SpawnManager::Deinit();
 	HealingManager::Deinit();
+	ActionManager::Deinit();
 	AbilityManager::Deinit();
+	DemandActionManager::Deinit();
 	GameManager::Deinit();
 	BlockedSpellsManager::Deinit();
 	DbManager::Deinit();
@@ -289,6 +293,7 @@ PLUGIN_API void OnPulse()
     _NextUpdate = lClockTime + SettingManager::Get()->GetUpdateDelay();
 
 	SpawnManager::Get()->Assess();
+	DemandActionManager::Get()->ReevaluateActions();
 
     _Player->Pulse();
 
@@ -620,6 +625,12 @@ void MikuReport(PSPAWNINFO pChar, PCHAR szLine)
 	//_Player->Report();
 }
 
+void MikuRegister(PSPAWNINFO pChar, PCHAR szLine)
+{
+	DemandActionManager::Get()->ParseCommand(szLine);
+	//_Player->Report();
+}
+
 PLUGIN_API VOID OnEndZone(VOID)
 {
     if (!_Player) return;
@@ -693,6 +704,7 @@ PLUGIN_API VOID InitializePlugin(VOID)
     AddCommand("/mikuactivate", MikuActivate);
 	AddCommand("/mikureport", MikuReport);
 	AddCommand("/mikuset", MikuSet);
+	AddCommand("/mikuregister", MikuRegister);
 }
 
 // Called once, when the plugin is to shutdown
@@ -711,6 +723,7 @@ PLUGIN_API VOID ShutdownPlugin(VOID)
     RemoveCommand("/mikuactivate");
 	RemoveCommand("/mikureport");
 	RemoveCommand("/mikuset");
+	RemoveCommand("/mikuregister");
 
     DeInit();
 }

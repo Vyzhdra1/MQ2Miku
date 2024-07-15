@@ -1,7 +1,7 @@
 #pragma once
 #include <mq/Plugin.h>
 
-enum SpawnType { UNKNOWN, SELF, TANK, GROUP, TARGET_OF_TANK, LOWEST_HP_GROUP, MYTARGET, DEAD_PLAYER, ATTACK_TARGET };
+enum SpawnType { UNKNOWN, SELF, TANK, GROUP, TARGET_OF_TANK, LOWEST_HP_GROUP, MYTARGET, DEAD_PLAYER, ATTACK_TARGET, MY_PET, XTARGET };
 bool* StickProc;
 class PlayerUtils
 {
@@ -16,6 +16,9 @@ public:
 	inline static std::string TANK_TAR_STR = "tanktar";
 	inline static std::string MY_TARGET_STR = "mytarget";
 	inline static std::string DEAD_STR = "deadplayer";
+	inline static std::string ATTACKTAR_STR = "attacktarget";
+	inline static std::string MY_PET_STR = "mypet";
+	inline static std::string XTARGET_STR = "xtar";
 
 	static SpawnType StringToSpawnType(std::string aValue) {
 		if (!SELF_STR.compare(aValue.c_str())) {
@@ -38,6 +41,15 @@ public:
 		}
 		else if (!DEAD_STR.compare(aValue.c_str())) {
 			return SpawnType::DEAD_PLAYER;
+		}
+		else if (!ATTACKTAR_STR.compare(aValue.c_str())) {
+			return SpawnType::ATTACK_TARGET;
+		}
+		else if (!MY_PET_STR.compare(aValue.c_str())) {
+			return SpawnType::MY_PET;
+		}
+		else if (!XTARGET_STR.compare(aValue.c_str())) {
+			return SpawnType::XTARGET;
 		}
 		return UNKNOWN;
 	}

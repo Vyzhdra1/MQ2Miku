@@ -107,7 +107,7 @@ public:
 		if (MELEE_MODE == MELEEMODE::MELEEMODE_NONE) {
 			return;
 		}
-		float lMeleeRange = GetRangeOffset();
+		long lMeleeRange = GetRangeOffset();
 		std::string lCommand = fmt::format(GetStick(), std::to_string(lMeleeRange));
 
 		Utils::MikuEcho(Utils::BLUE_COLOR, "Stick Command: ", lCommand);

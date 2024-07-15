@@ -18,10 +18,13 @@ private:
 	std::string _ID;
 	MatchType _MatchType = MatchType::MATCHUNKNOWN;
 	std::string _LevelMod;
+	std::string _DemandSet;
 	SpawnType _Target;
+	int _TargetID = -1;
 	bool _IsForced = false;
 	bool _Simultaneous = false;
 	bool _LoadTrigger = false;
+	bool _AllowEmpty = false;
 
 	std::set<Token*> _Conditions;
 public:
@@ -39,8 +42,20 @@ public:
 		return _TokenType;
 	}
 
+	std::string GetDemandSet() {
+		return _DemandSet;
+	}
+
+	void ClearType() {
+		_TokenType = "";
+	}
+
 	bool GetSimultaneous() {
 		return _Simultaneous;
+	}
+
+	bool GetAllowEmpty() {
+		return _AllowEmpty;
 	}
 	
 	std::string GetID() {
@@ -61,6 +76,10 @@ public:
 
 	SpawnType GetTarget() {
 		return _Target;
+	}
+
+	int GetTargetID() {
+		return _TargetID;
 	}
 
 	bool GetLoadTrigger() {
@@ -92,6 +111,10 @@ public:
 		}
 	}
 
+	bool ParseAsString(std::string aInput) {
+		return Parse(aInput.data());
+	}
+
 	bool Parse(char* aInput) {
 		const char* KEY = "key";
 		const char* ID = "id";
@@ -102,6 +125,9 @@ public:
 		const char* TARGET = "target";
 		const char* SIMULTANEOUS = "simultaneous";
 		const char* TRIGGERS = "loadtrigger";
+		const char* DEMANDSET = "demandset";
+		const char* TARGETID = "targetid";
+		const char* ALLOWEMPTY = "allowempty";
 
 		char* lParsePtr;
 		char* lNameDelimiter = "|";
@@ -139,6 +165,15 @@ public:
 					}
 					else if (!_strcmpi(TRIGGERS, lKey)) {
 						_LoadTrigger = !TRUE_STR.compare(lValue);
+					}
+					else if (!_strcmpi(DEMANDSET, lKey)) {
+						_DemandSet = lValue;
+					}
+					else if (!_strcmpi(TARGETID, lKey)) {
+						_DemandSet = lValue;
+					}
+					else if (!_strcmpi(ALLOWEMPTY, lKey)) {
+						_AllowEmpty = true;
 					}
 					else {
 						Token* lToken = new Token(lKey, lValue);
